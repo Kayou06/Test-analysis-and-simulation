@@ -1,0 +1,4 @@
+This folder contains .npy files for the vector fields 
+for the following images 
+- reference image: AE2224_DATASET_GROUPD02/Raw_Pictures_Wavelet/BOS_220C_reference.tif
+- image: AE2224_DATASET_GROUPD02/Raw_Pictures_Wavelet/BOS_12_11_1.tif
