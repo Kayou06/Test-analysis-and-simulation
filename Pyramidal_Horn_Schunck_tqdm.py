@@ -80,6 +80,7 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5):
         
         iter_counter = 0
         n = 20000
+        # pbar = tqdm(desc=f'Level {i+1}/{levels}', total=n)
         pbar = tqdm(desc=f'Level {i+1}/{levels}', unit='iter')
 
         while True:
