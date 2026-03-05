@@ -15,12 +15,13 @@ from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
 # from blob_detector_function import cross_finder
 # from cross_verification import match_score
 from D02_cross_correction import cross_correction
+from d02_display_field import *
 
 root = os.getcwd()
 
 
-ref_img = cv.imread("Raw Pictures Wavelet/BOS_220C_reference.tif")
-work_img = cv.imread("Raw Pictures Wavelet/BOS_12_11_1.tif")
+ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_220C_reference.tif")
+work_img = cv.imread("Raw_Pictures_Wavelet/BOS_12_11_1.tif")
 
 # # Visualize the raw images
 
@@ -57,15 +58,15 @@ trial = work_img - ref_img
 plt.imshow(trial)
 plt.show()
 
-# Create a mask for the background region
-# For example, assuming the background is a specific color or can be segmented
-# Here, a dummy mask is created; replace this with your actual background mask
-background_mask = np.ones (ref_img.shape[:2], dtype=bool)
+# # Create a mask for the background region
+# # For example, assuming the background is a specific color or can be segmented
+# # Here, a dummy mask is created; replace this with your actual background mask
+# background_mask = np.ones (ref_img.shape[:2], dtype=bool)
 
-# # If it's first run at particular conditions (i.e., BOS_x_y_z), use this function to create a mask
-# # The script will brake after the mask is created, but a npy file will be created
+# # # If it's first run at particular conditions (i.e., BOS_x_y_z), use this function to create a mask
+# # # The script will brake after the mask is created, but a npy file will be created
 
-mask_point = mask_points(ref_img,"BOS_12_11_1_mask.npy")
+# mask_point = mask_points(ref_img,"BOS_12_11_1_mask.npy")
 
 # # If a mask already exists, use this line, adjust the name based on the npy file created
 mask_point = np.load("Mask_shapes/BOS_12_11_1_mask.npy")
@@ -104,13 +105,23 @@ plt.show()
 # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
 # # The blur is based on the results from my Cross-Correlation pre-processubg
 # # Alpha is based on some trial and error
-u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=25, levels=6, delta=1e-2, blr=5)
+# u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=25, levels=6, delta=1e-2, blr=5)
+
+u_path = "VF BOS_12_11_1 (220)/u_HS_alpha25_blur5.npy"
+v_path = "VF BOS_12_11_1 (220)/v_HS_alpha25_blur5.npy"
+u = np.load("VF BOS_12_11_1 (220)/u_HS_alpha25_blur5.npy")
+v = np.load("VF BOS_12_11_1 (220)/v_HS_alpha25_blur5.npy")
 
 #correct using cross-correction
 u_corr, v_corr = cross_correction(u, v)
 
+np.save("u_corr", u_corr)
+np.save("v_corr", v_corr)
+
 # # Visualize the results
-draw_quiver(u_corr,v_corr,ref_img_final)
+# draw_quiver(u_corr,v_corr,ref_img_final)
+
+display_many_fields(u_path, v_path, "u_corr.npy", "v_corr.npy")
 
 # # Save the results
 # np.save("u_HS", u)
