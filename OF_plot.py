@@ -43,6 +43,7 @@ def draw_quiver(u,v,beforeImg):
     plt.show()
 
 
+# Fancy matplotlib stuff to display multiple plots at once
 def draw_quiver_many(u, v, beforeImg, titles=None, *, scale=10, step=8):
     many = isinstance(u, (list, tuple))
 

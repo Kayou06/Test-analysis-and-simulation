@@ -2,6 +2,8 @@ import numpy as np
 import cv2 as cv
 from OF_plot import draw_quiver, draw_quiver_many
 
+# Prety much just a file to display the results of the optical flow calculations, using the quiver plots from OF_plot.py
+# Self explantory, you can add or remove as many vector fields as you want
 def display_field():
     u = np.load("u_HS.npy")
     v = np.load("v_HS.npy")
