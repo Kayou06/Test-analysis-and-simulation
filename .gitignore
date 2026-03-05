@@ -2,3 +2,4 @@
 *.mp4
 /Old_stuff
 /Optical-flow-*
+/__pycache__
