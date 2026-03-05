@@ -17,12 +17,6 @@ from D02_cross_correction import cross_correction
 
 root = os.getcwd()
 
-# ref_img_path = os.path.join(
-#     root, "Raw_Pictures_Wavelet", "BOS_220C_reference.tif"
-# )
-# work_img_path = os.path.join(
-#     root, "Raw_Pictures_Wavelet", "BOS_12_11_1.tif" 
-# )
 
 ref_img = cv.imread("Raw Pictures Wavelet/BOS_220C_reference.tif")
 work_img = cv.imread("Raw Pictures Wavelet/BOS_12_11_1.tif")
