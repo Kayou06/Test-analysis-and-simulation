@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+#scaling factor from READ ME.txt
+SF = 25.097 #[px/mm]
+
 # read our own BOS data
 df_BOS = pd.read_csv('BOS_12_11_10001.csv',delimiter=';') 
 
