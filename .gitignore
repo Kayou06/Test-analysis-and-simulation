@@ -3,3 +3,5 @@
 /Old_stuff
 /Optical-flow-*
 /__pycache__
+/.venv
+main.py

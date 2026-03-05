@@ -6,6 +6,7 @@ import numpy as np
 from Pre_processing import standard_pre
 # from Canny_visualizer import cannyEdge_visual
 # from circle_finder import circles_finder
+from d02_display_field import display_many_fields
 from video_maker import video_maker
 from Masking import mask_points
 from Masking import shape_isolation
