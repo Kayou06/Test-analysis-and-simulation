@@ -13,18 +13,19 @@ from OF_plot import *
 from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
 # from blob_detector_function import cross_finder
 # from cross_verification import match_score
+from D02_cross_correction import cross_correction
 
 root = os.getcwd()
 
-ref_img_path = os.path.join(
-    root, "Raw_Pictures_Wavelet", "BOS_220C_reference.tif"
-)
-work_img_path = os.path.join(
-    root, "Raw_Pictures_Wavelet", "BOS_12_11_1.tif" 
-)
+# ref_img_path = os.path.join(
+#     root, "Raw_Pictures_Wavelet", "BOS_220C_reference.tif"
+# )
+# work_img_path = os.path.join(
+#     root, "Raw_Pictures_Wavelet", "BOS_12_11_1.tif" 
+# )
 
-ref_img = cv.imread(ref_img_path)
-work_img = cv.imread(work_img_path)
+ref_img = cv.imread("Raw Pictures Wavelet/BOS_220C_reference.tif")
+work_img = cv.imread("Raw Pictures Wavelet/BOS_12_11_1.tif")
 
 # # Visualize the raw images
 
@@ -110,9 +111,12 @@ plt.show()
 # # Alpha is based on some trial and error
 u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=25, levels=6, delta=1e-2, blr=5)
 
-# # Visualize the results
-draw_quiver(u,v,ref_img_final)
+#correct using cross-correction
+u_corr, v_corr = cross_correction(u, v)
 
-# Save the results
-np.save("u_HS", u)
-np.save("v_HS", v)
+# # Visualize the results
+draw_quiver(u_corr,v_corr,ref_img_final)
+
+# # Save the results
+# np.save("u_HS", u)
+# np.save("v_HS", v)
