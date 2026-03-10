@@ -15,6 +15,7 @@ from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
 # from cross_verification import match_score
 from D02_cross_correction import cross_correction
 from d02_display_field import *
+from quick_plot import plot_midplane
 
 root = os.getcwd()
 
@@ -24,11 +25,11 @@ work_img = cv.imread("Raw_Pictures_Wavelet/BOS_12_11_1.tif")
 
 # # Visualize the raw images
 
-plt.subplot(1,2,1)
-plt.imshow(ref_img,cmap='gray')
-plt.subplot(1,2,2)
-plt.imshow(work_img,cmap='gray')
-plt.show()
+# plt.subplot(1,2,1)
+# plt.imshow(ref_img,cmap='gray')
+# plt.subplot(1,2,2)
+# plt.imshow(work_img,cmap='gray')
+# plt.show()
 
 # # Standard pre-processing applied ( scale (1 means no scaling), and histogram equalization)
 ref_img = standard_pre(ref_img,1)
@@ -42,11 +43,11 @@ work_img = standard_pre(work_img,1)
 
 # # Visualize the normalized images
 
-plt.subplot(1,2,1)
-plt.imshow(ref_img,cmap='gray')
-plt.subplot(1,2,2)
-plt.imshow(work_img,cmap='gray')    
-plt.show()
+# plt.subplot(1,2,1)
+# plt.imshow(ref_img,cmap='gray')
+# plt.subplot(1,2,2)
+# plt.imshow(work_img,cmap='gray')    
+# plt.show()
 
 '''
 Quick check for visualizing the displacement between the two images
@@ -54,8 +55,8 @@ Quick check for visualizing the displacement between the two images
 # # subtract the images to see the difference
 trial = work_img - ref_img
 
-plt.imshow(trial)
-plt.show()
+# plt.imshow(trial)
+# plt.show()
 
 # # Create a mask for the background region
 # # For example, assuming the background is a specific color or can be segmented
@@ -93,23 +94,26 @@ cv.imwrite('Correlable_pics/BOS_12_11_1_masked.tif', work_img_final)
 cv.imwrite('Correlable_pics/BOS_12_11_ref_masked.tif', ref_img_final)
 
 # visualize the masked images
-plt.subplot(1,2,1)
-plt.imshow(ref_img_final,cmap='gray')
-plt.subplot(1,2,2)
-plt.imshow(work_img_final,cmap='gray')
-plt.show()
+# plt.subplot(1,2,1)
+# plt.imshow(ref_img_final,cmap='gray')
+# plt.subplot(1,2,2)
+# plt.imshow(work_img_final,cmap='gray')
+# plt.show()
 
 # # MAIN RUN
 # # The number of levels is determined based on the maximum displacement expected
 # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
 # # The blur is based on the results from my Cross-Correlation pre-processubg
 # # Alpha is based on some trial and error
-# u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=25, levels=6, delta=1e-2, blr=5)
+u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=35, levels=6, delta=1e-2, blr=11)
 
-u_path = "VF BOS_12_11_1 (220)/u_HS_alpha25_blur5.npy"
-v_path = "VF BOS_12_11_1 (220)/v_HS_alpha25_blur5.npy"
-u = np.load("VF BOS_12_11_1 (220)/u_HS_alpha25_blur5.npy")
-v = np.load("VF BOS_12_11_1 (220)/v_HS_alpha25_blur5.npy")
+np.save("VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy", u)
+np.save("VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy", v)
+
+u_path = "VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy"
+v_path = "VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy"
+u = np.load("VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy")
+v = np.load("VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy")
 
 #correct using cross-correction
 u_corr, v_corr = cross_correction(u, v)
@@ -119,6 +123,12 @@ np.save("v_corr", v_corr)
 
 # # Visualize the results
 # draw_quiver(u_corr,v_corr,ref_img_final)
+
+
+plot_midplane(v,'original')
+plot_midplane(v_corr,'corrected')
+plt.legend()
+plt.show()
 
 display_many_fields(u_path, v_path, "u_corr.npy", "v_corr.npy")
 
