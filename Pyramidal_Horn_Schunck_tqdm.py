@@ -24,13 +24,16 @@ def get_first_order_derivatives(img1, img2):
     return [fx,fy,ft]
 
 
-def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5):
+def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussian"):
 
-    Image1 = Image1.astype(np.float64) 
-    Image2 = Image2.astype(np.float64) 
-    Image1 = cv.GaussianBlur(Image1, (blr, blr), 0)
-    Image2 = cv.GaussianBlur(Image2, (blr, blr), 0)
+    if blur_type == "gaussian":
+        Image1 = Image1.astype(np.float64) 
+        Image2 = Image2.astype(np.float64) 
+        Image1 = cv.GaussianBlur(Image1, (blr, blr), 0)
+        Image2 = cv.GaussianBlur(Image2, (blr, blr), 0)
 
+    if blur_type == "median":
+        pass
     # If using median blur, the float type is 32
     # Image1 = Image1.astype(np.float32) 
     # Image2 = Image2.astype(np.float32) 

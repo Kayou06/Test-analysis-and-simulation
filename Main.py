@@ -114,25 +114,28 @@ cv.imwrite('Correlable_pics/BOS_12_11_ref_masked.tif', ref_img_final)
 # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
 # # The blur is based on the results from my Cross-Correlation pre-processubg
 # # Alpha is based on some trial and error
+
+'''CONFIGURE PARAMETERS'''
 alpha = 35
 blur =  11
+blur_type = "gaussian"
 
-
-u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur)
-
-np.save(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy", u)
-np.save(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy", v)
-
-u_path = f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy"
-v_path = f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy"
-u = np.load(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy")
-v = np.load(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy")
-
-#correct using cross-correction
+# Compute and correct vector fields
+u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
 u_corr, v_corr = cross_correction(u, v)
 
-np.save("u_corr", u_corr)
-np.save("v_corr", v_corr)
+# Save vector fields
+np.save(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
+np.save(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
+np.save(f"VF BOS_12_11_1 (220) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
+np.save(f"VF BOS_12_11_1 (220) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
+
+u_path = f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy"
+v_path = f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy"
+u = np.load(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+v = np.load(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+
+
 
 # # Visualize the results
 # draw_quiver(u_corr,v_corr,ref_img_final)
