@@ -119,7 +119,7 @@ if __name__ == "__main__":
     '''CONFIGURE PARAMETERS'''
     alpha = 35
     blur =  11
-    blur_type = "gaussian"
+    blur_type = "median"
 
     # Compute and correct vector fields
     u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)

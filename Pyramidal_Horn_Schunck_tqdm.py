@@ -33,14 +33,16 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussi
         Image2 = cv.GaussianBlur(Image2, (blr, blr), 0)
 
     if blur_type == "median":
-        pass
-    # If using median blur, the float type is 32
-    # Image1 = Image1.astype(np.float32) 
-    # Image2 = Image2.astype(np.float32) 
-    # # Image1 = cv.cvtColor (Image1, cv.COLOR_BGR2GRAY)
-    # # Image2 = cv.cvtColor (Image2, cv.COLOR_BGR2GRAY)
-    # Image1 = cv.medianBlur(Image1,blr)
-    # Image2 = cv.medianBlur(Image2,blr)
+        # If using median blur, the float type is 32
+        # Image1 = Image1.astype(np.float32) 
+        # Image2 = Image2.astype(np.float32) 
+        # Image1 = cv.cvtColor (Image1, cv.COLOR_BGR2GRAY)
+        # Image2 = cv.cvtColor (Image2, cv.COLOR_BGR2GRAY)
+        Image1 = cv.medianBlur(Image1,blr)
+        Image2 = cv.medianBlur(Image2,blr)
+
+        Image1 = Image1.astype(np.float32) 
+        Image2 = Image2.astype(np.float32) 
 
     rows, cols = map(int, Image1.shape)
 
