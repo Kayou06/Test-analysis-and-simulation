@@ -23,6 +23,5 @@ def mask_correction(u, v, mask):
             except IndexError:
                 pass
 
-    np.save("u_corr", u)
-    np.save("v_corr", v)
+    return u, v
 
