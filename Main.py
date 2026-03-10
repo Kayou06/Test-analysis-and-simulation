@@ -1,3 +1,4 @@
+'''IMPORTS'''
 import cv2 as cv
 import os
 import matplotlib.pyplot as plt
@@ -19,11 +20,20 @@ from quick_plot import plot_midplane
 
 root = os.getcwd()
 
+'''CHOOSE the image number'''
+image_no = 1
 
-ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_220C_reference.tif")
-work_img = cv.imread("Raw_Pictures_Wavelet/BOS_12_11_1.tif")
+work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
+if image_no == 1 or image_no == 2:
+    #temperature of 220 degrees C
+    ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_220C_reference.tif")
+else:
+    #temperature of 252 degrees C
+    ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_252C_reference.tif")
 
-# # Visualize the raw images
+
+'''Next parts contain optional plotting and visualization of images'''
+# # OPTIONAL visualize the raw images
 
 # plt.subplot(1,2,1)
 # plt.imshow(ref_img,cmap='gray')
@@ -31,32 +41,29 @@ work_img = cv.imread("Raw_Pictures_Wavelet/BOS_12_11_1.tif")
 # plt.imshow(work_img,cmap='gray')
 # plt.show()
 
-# # Standard pre-processing applied ( scale (1 means no scaling), and histogram equalization)
+# # PRE-PROCESSING standard pre-processing applied:
+# # ( scale (1 means no scaling), and histogram equalization)
 ref_img = standard_pre(ref_img,1)
 work_img = standard_pre(work_img,1)
 
-# # no pre-processing, this step is required to get a single channel
+# # OPTIONAL no pre-processing, this step is required to get a single channel
 # # Only for other file formats than tiff
-
 # ref_img = cv.cvtColor(ref_img, cv.COLOR_BGR2GRAY)
 # work_img = cv.cvtColor(work_img, cv.COLOR_BGR2GRAY)
 
-# # Visualize the normalized images
-
+# # OPTIONAL visualize the normalized images
 # plt.subplot(1,2,1)
 # plt.imshow(ref_img,cmap='gray')
 # plt.subplot(1,2,2)
 # plt.imshow(work_img,cmap='gray')    
 # plt.show()
 
-'''
-Quick check for visualizing the displacement between the two images
-'''
-# # subtract the images to see the difference
-trial = work_img - ref_img
-
+# # OPTIONAL subtract the images to see the difference
+# trial = work_img - ref_img
 # plt.imshow(trial)
 # plt.show()
+
+'''Next parts contain mask configuration'''
 
 # # Create a mask for the background region
 # # For example, assuming the background is a specific color or can be segmented
@@ -93,27 +100,33 @@ work_img_final = work_img_final[min_y:max_y,:]
 cv.imwrite('Correlable_pics/BOS_12_11_1_masked.tif', work_img_final)
 cv.imwrite('Correlable_pics/BOS_12_11_ref_masked.tif', ref_img_final)
 
-# visualize the masked images
+# OPTIONAL visualize the masked images
 # plt.subplot(1,2,1)
 # plt.imshow(ref_img_final,cmap='gray')
 # plt.subplot(1,2,2)
 # plt.imshow(work_img_final,cmap='gray')
 # plt.show()
 
+'''MAIN RUN'''
+
 # # MAIN RUN
 # # The number of levels is determined based on the maximum displacement expected
 # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
 # # The blur is based on the results from my Cross-Correlation pre-processubg
 # # Alpha is based on some trial and error
-u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=35, levels=6, delta=1e-2, blr=11)
+alpha = 35
+blur =  11
 
-np.save("VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy", u)
-np.save("VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy", v)
 
-u_path = "VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy"
-v_path = "VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy"
-u = np.load("VF BOS_12_11_1 (220)/u_HS_alpha35_blur9.npy")
-v = np.load("VF BOS_12_11_1 (220)/v_HS_alpha35_blur9.npy")
+u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur)
+
+np.save(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy", u)
+np.save(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy", v)
+
+u_path = f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy"
+v_path = f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy"
+u = np.load(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}.npy")
+v = np.load(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}.npy")
 
 #correct using cross-correction
 u_corr, v_corr = cross_correction(u, v)
