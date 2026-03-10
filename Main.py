@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # # Alpha is based on some trial and error
 
     '''CONFIGURE PARAMETERS'''
-    alpha = 35
+    alpha = 25
     blur =  11
     blur_type = "median"
 
