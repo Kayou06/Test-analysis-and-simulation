@@ -5,3 +5,5 @@
 /__pycache__
 /.venv
 main.py
+/Raw_Pictures_Wavelet
+test.py
