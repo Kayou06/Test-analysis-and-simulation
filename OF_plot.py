@@ -94,7 +94,6 @@ def draw_quiver_many(u, v, beforeImg, titles=None, *, scale=10, step=8):
         if titles_list is not None and titles_list[k] is not None:
             ax.set_title(titles_list[k])
 
-        ax.set_axis_off()
 
     plt.tight_layout()
     plt.show()
