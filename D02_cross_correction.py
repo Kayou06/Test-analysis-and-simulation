@@ -30,7 +30,7 @@ def cross_correction(u, v):
     print(f"Mean y: {avg_y_corr}")
 
     # use the correction data to correct the BOS data frame
-    u_corr = u - avg_x_corr.iloc[0,0]
-    v_corr = v - avg_y_corr.iloc[0,0]
+    u_corr = u - avg_x_corr.iloc[0,0] * SF
+    v_corr = v - avg_y_corr.iloc[0,0] * SF
 
     return u_corr, v_corr
