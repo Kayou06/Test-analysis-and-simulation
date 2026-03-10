@@ -71,3 +71,32 @@ runs = [
 
 display_many_fields(runs)
 '''
+
+def display_many_fields_object(runs, *, titles=None):
+    us, vs, masks = [], [], []
+    auto_titles = []
+
+    for i, run in enumerate(runs, start=1):
+        if len(run) == 3:
+            u, v, mask = run
+            t = None
+        elif len(run) == 4:
+            u, v, mask, t = run
+        else:
+            raise ValueError(f"Each run must have 3 or 4 items, got {len(run)}: {run}")
+
+        us.append(np.asarray(u))
+        vs.append(np.asarray(v))
+        masks.append(np.asarray(mask))
+
+        auto_titles.append(t if t is not None else f"Run {i}")
+
+    if titles is None:
+        titles = auto_titles
+    elif len(titles) != len(us):
+        raise ValueError(f"titles has length {len(titles)} but there are {len(us)} runs")
+
+    draw_quiver_many(us, vs, masks, titles=titles)
+
+# The one above takes the actual u, v, and mask objects instead of the paths to the files.
+# This is useful if you want to do some corrections to the fields before displaying them, without having to save them as npy files first.
