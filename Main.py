@@ -120,7 +120,7 @@ if __name__ == "__main__":
     '''CONFIGURE PARAMETERS'''
     alpha = 25
     blur =  11
-    blur_type = "median"
+    blur_type = "median" #blur type is either "gaussian" or "median"
 
     # Compute and correct vector fields
     u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
@@ -148,4 +148,5 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
+    #TODO update display_many_fields
     display_many_fields(u_path, v_path, "u_corr.npy", "v_corr.npy")

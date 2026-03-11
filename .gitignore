@@ -7,3 +7,5 @@
 main.py
 /Raw_Pictures_Wavelet
 test.py
+__pycache__/
+*.pyc
