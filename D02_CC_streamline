@@ -2,22 +2,16 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# -------------------------------------------------
 # Load data
-# -------------------------------------------------
 df_BOS = pd.read_csv(r'CC Data/displacement_vectors.csv', delimiter=',')
 
-# -------------------------------------------------
 # Extract raw BOS data
-# -------------------------------------------------
 x = df_BOS['x'].to_numpy()
 y = df_BOS['y'].to_numpy()
 u = df_BOS['x-displacement'].to_numpy()
 v = df_BOS['y-displacement'].to_numpy()
 
-# -------------------------------------------------
 # Build working DataFrame
-# -------------------------------------------------
 data = pd.DataFrame({
     "x": x,
     "y": y,
@@ -37,10 +31,8 @@ fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
 # Store results
 results = {f: {"x": [], "y_target": [], "ux": [], "uy": []} for f in fractions}
 
-# -------------------------------------------------
 # Sample along y / y_max(x) = const
 # using upper half only (y >= 0)
-# -------------------------------------------------
 for x0 in x_unique:
     col_all = data[np.isclose(data["x"], x0)].copy().sort_values("y")
     col_upper = col_all[col_all["y"] >= 0].copy().sort_values("y")
@@ -87,9 +79,7 @@ for x0 in x_unique:
         results[f]["ux"].append(ux_target)
         results[f]["uy"].append(uy_target)
 
-# -------------------------------------------------
 # Plot displacement vs x
-# -------------------------------------------------
 fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
 for f in fractions:
@@ -120,9 +110,7 @@ axes[1].grid(True)
 plt.tight_layout()
 plt.show()
 
-# -------------------------------------------------
 # Optional: show the actual sampling curves in the nozzle
-# -------------------------------------------------
 plt.figure(figsize=(10, 4))
 plt.scatter(x, y, s=2, color='lightgray', label='BOS grid')
 
