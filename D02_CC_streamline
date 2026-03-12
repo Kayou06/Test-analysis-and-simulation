@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 # Load data
 # -------------------------------------------------
-df_BOS = pd.read_csv(r'Raw_Pictures_Wavelet\BOS_12_11_1\BOS_12_11_10001.csv', delimiter=';')
-df_corr = pd.read_csv(r'Raw_Pictures_Wavelet\BOS_12_11_1\cross_correction0001.csv', delimiter=';')
+df_BOS = pd.read_csv(r'CC Data/displacement_vectors.csv', delimiter=',')
 
 # -------------------------------------------------
 # Extract raw BOS data
@@ -17,23 +16,13 @@ u = df_BOS['x-displacement'].to_numpy()
 v = df_BOS['y-displacement'].to_numpy()
 
 # -------------------------------------------------
-# Correction offsets from cross-correction file
-# -------------------------------------------------
-u_corr = df_corr['x-displacement'].mean()
-v_corr = df_corr['y-displacement'].mean()
-
-# Final corrected displacements
-u_final = u - u_corr
-v_final = v - v_corr
-
-# -------------------------------------------------
 # Build working DataFrame
 # -------------------------------------------------
 data = pd.DataFrame({
     "x": x,
     "y": y,
-    "ux": u_final,
-    "uy": v_final
+    "ux": u,
+    "uy": v
 })
 
 data = data.sort_values(["x", "y"]).reset_index(drop=True)
@@ -42,10 +31,8 @@ data = data.sort_values(["x", "y"]).reset_index(drop=True)
 x_unique = np.sort(data["x"].unique())
 
 # Fractions of local nozzle half-height
-fractions = [0.01, 0.25, 0.50, 0.75, 1.00]
+fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
 
-# tolerance on y/y_max(x)
-tol = 0.01
 
 # Store results
 results = {f: {"x": [], "y_target": [], "ux": [], "uy": []} for f in fractions}
@@ -55,17 +42,22 @@ results = {f: {"x": [], "y_target": [], "ux": [], "uy": []} for f in fractions}
 # using upper half only (y >= 0)
 # -------------------------------------------------
 for x0 in x_unique:
-    col = data[np.isclose(data["x"], x0)].copy()
+    col_all = data[np.isclose(data["x"], x0)].copy().sort_values("y")
+    col_upper = col_all[col_all["y"] >= 0].copy().sort_values("y")
 
-    # use upper half
-    col = col[col["y"] >= 0].sort_values("y")
-
-    if len(col) < 2:
+    if len(col_all) < 2:
         continue
 
-    y_col = col["y"].to_numpy()
-    ux_col = col["ux"].to_numpy()
-    uy_col = col["uy"].to_numpy()
+    y_all = col_all["y"].to_numpy()
+    ux_all = col_all["ux"].to_numpy()
+    uy_all = col_all["uy"].to_numpy()
+
+    if len(col_upper) < 2:
+        continue
+
+    y_col = col_upper["y"].to_numpy()
+    ux_col = col_upper["ux"].to_numpy()
+    uy_col = col_upper["uy"].to_numpy()
 
     y_max_local = np.max(y_col)
 
@@ -73,18 +65,22 @@ for x0 in x_unique:
         continue
 
     for f in fractions:
-        y_target = f * y_max_local
+        if f == 0.0:
+            if 0.0 < y_all.min() or 0.0 > y_all.max():
+                continue
 
-        # ratio check with tolerance
-        ratio = y_target / y_max_local
-        if abs(ratio - f) > tol:
-            continue
+            y_target = 0.0
+            ux_target = np.interp(0.0, y_all, ux_all)
+            uy_target = np.interp(0.0, y_all, uy_all)
 
-        if y_target < y_col.min() or y_target > y_col.max():
-            continue
+        else:
+            y_target = f * y_max_local
 
-        ux_target = np.interp(y_target, y_col, ux_col)
-        uy_target = np.interp(y_target, y_col, uy_col)
+            if y_target < y_col.min() or y_target > y_col.max():
+                continue
+
+            ux_target = np.interp(y_target, y_col, ux_col)
+            uy_target = np.interp(y_target, y_col, uy_col)
 
         results[f]["x"].append(x0)
         results[f]["y_target"].append(y_target)
@@ -111,14 +107,14 @@ for f in fractions:
     axes[0].plot(x_plot, ux_plot, label=label)
     axes[1].plot(x_plot, uy_plot, label=label)
 
-axes[0].set_ylabel("Corrected x-displacement")
-axes[0].set_title("Corrected x-displacement vs x")
+axes[0].set_ylabel("x-displacement")
+axes[0].set_title("x-displacement vs x")
 axes[0].grid(True)
 axes[0].legend()
 
-axes[1].set_ylabel("Corrected y-displacement")
+axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
-axes[1].set_title("Corrected y-displacement vs x")
+axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
 
 plt.tight_layout()
@@ -139,7 +135,7 @@ for f in fractions:
 
 plt.xlabel("x")
 plt.ylabel("y")
-plt.title("Sampling curves used for corrected displacement extraction")
+plt.title("Sampling curves used for displacement extraction")
 plt.axis("equal")
 plt.grid(True)
 plt.legend()
