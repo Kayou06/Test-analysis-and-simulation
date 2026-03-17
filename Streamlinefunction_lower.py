@@ -2,156 +2,172 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# -------------------------------------------------
-# Load data
-# -------------------------------------------------
-df_BOS = pd.read_csv(r'CC Data/displacement_vectors4.csv', delimiter=',')
 
-# -------------------------------------------------
-# Extract raw BOS data
-# -------------------------------------------------
-x = df_BOS['x'].to_numpy()
-y = df_BOS['y'].to_numpy()
-u = df_BOS['x-displacement'].to_numpy()
-v = df_BOS['y-displacement'].to_numpy()
+def extract_upper_streamlines(
+    csv_path,
+    output_csv_path=None,
+    fractions=None,
+    make_plots=True
+):
 
-# -------------------------------------------------
-# Build working DataFrame
-# -------------------------------------------------
-data = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "ux": u,
-    "uy": v
-})
 
-data = data.sort_values(["x", "y"]).reset_index(drop=True)
+    # -------------------------------------------------
+    # Load data
+    # -------------------------------------------------
+    df_BOS = pd.read_csv(csv_path, delimiter=',')
 
-# Unique x-columns
-x_unique = np.sort(data["x"].unique())
+    # -------------------------------------------------
+    # Extract raw BOS data
+    # -------------------------------------------------
+    x = df_BOS['x'].to_numpy()
+    y = df_BOS['y'].to_numpy()
+    u = df_BOS['x-displacement'].to_numpy()
+    v = df_BOS['y-displacement'].to_numpy()
 
-# Fractions of local nozzle half-height
-fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
+    # -------------------------------------------------
+    # Build working DataFrame
+    # -------------------------------------------------
+    data = pd.DataFrame({
+        "x": x,
+        "y": y,
+        "ux": u,
+        "uy": v
+    })
 
-# Store results
-results = {f: {"x": [], "y_target": [], "ux": [], "uy": []} for f in fractions}
+    data = data.sort_values(["x", "y"]).reset_index(drop=True)
 
-# -------------------------------------------------
-# Sample along y / y_min(x) = const
-# using lower half only (y <= 0)
-# -------------------------------------------------
-for x0 in x_unique:
-    col_all = data[np.isclose(data["x"], x0)].copy().sort_values("y")
-    col_lower = col_all[col_all["y"] <= 0].copy().sort_values("y")
+    # Unique x-columns
+    x_unique = np.sort(data["x"].unique())
 
-    if len(col_all) < 2:
-        continue
+    # Fractions of local nozzle half-height
+    fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
 
-    y_all = col_all["y"].to_numpy()
-    ux_all = col_all["ux"].to_numpy()
-    uy_all = col_all["uy"].to_numpy()
+    # Store results
+    results = {f: {"x": [], "y_target": [], "ux": [], "uy": []} for f in fractions}
 
-    if len(col_lower) < 2:
-        continue
+    # -------------------------------------------------
+    # Sample along y / y_min(x) = const
+    # using lower half only (y <= 0)
+    # -------------------------------------------------
+    for x0 in x_unique:
+        col_all = data[np.isclose(data["x"], x0)].copy().sort_values("y")
+        col_lower = col_all[col_all["y"] <= 0].copy().sort_values("y")
 
-    y_col = col_lower["y"].to_numpy()
-    ux_col = col_lower["ux"].to_numpy()
-    uy_col = col_lower["uy"].to_numpy()
+        if len(col_all) < 2:
+            continue
 
-    y_min_local = np.min(y_col)
+        y_all = col_all["y"].to_numpy()
+        ux_all = col_all["ux"].to_numpy()
+        uy_all = col_all["uy"].to_numpy()
 
-    if y_min_local >= 0:
-        continue
+        if len(col_lower) < 2:
+            continue
+
+        y_col = col_lower["y"].to_numpy()
+        ux_col = col_lower["ux"].to_numpy()
+        uy_col = col_lower["uy"].to_numpy()
+
+        y_min_local = np.min(y_col)
+
+        if y_min_local >= 0:
+            continue
+
+        for f in fractions:
+            if f == 0.0:
+                if 0.0 < y_all.min() or 0.0 > y_all.max():
+                    continue
+
+                y_target = 0.0
+                ux_target = np.interp(0.0, y_all, ux_all)
+                uy_target = np.interp(0.0, y_all, uy_all)
+
+            else:
+                y_target = f * y_min_local   # negative value
+
+                if y_target < y_col.min() or y_target > y_col.max():
+                    continue
+
+                ux_target = np.interp(y_target, y_col, ux_col)
+                uy_target = np.interp(y_target, y_col, uy_col)
+
+            results[f]["x"].append(x0)
+            results[f]["y_target"].append(y_target)
+            results[f]["ux"].append(ux_target)
+            results[f]["uy"].append(uy_target)
+
+    # -------------------------------------------------
+    # Plot displacement vs x
+    # -------------------------------------------------
+    fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
     for f in fractions:
-        if f == 0.0:
-            if 0.0 < y_all.min() or 0.0 > y_all.max():
-                continue
+        x_plot = np.array(results[f]["x"])
+        ux_plot = np.array(results[f]["ux"])
+        uy_plot = np.array(results[f]["uy"])
 
-            y_target = 0.0
-            ux_target = np.interp(0.0, y_all, ux_all)
-            uy_target = np.interp(0.0, y_all, uy_all)
+        idx = np.argsort(x_plot)
+        x_plot = x_plot[idx]
+        ux_plot = ux_plot[idx]
+        uy_plot = uy_plot[idx]
 
-        else:
-            y_target = f * y_min_local   # negative value
+        label = f"y / y_min(x) = {f:.2f}"
 
-            if y_target < y_col.min() or y_target > y_col.max():
-                continue
+        axes[0].plot(x_plot, ux_plot, label=label)
+        axes[1].plot(x_plot, uy_plot, label=label)
 
-            ux_target = np.interp(y_target, y_col, ux_col)
-            uy_target = np.interp(y_target, y_col, uy_col)
+    axes[0].set_ylabel("x-displacement")
+    axes[0].set_title("x-displacement vs x (lower side)")
+    axes[0].grid(True)
+    axes[0].legend()
 
-        results[f]["x"].append(x0)
-        results[f]["y_target"].append(y_target)
-        results[f]["ux"].append(ux_target)
-        results[f]["uy"].append(uy_target)
+    axes[1].set_ylabel("y-displacement")
+    axes[1].set_xlabel("x")
+    axes[1].set_title("y-displacement vs x (lower side)")
+    axes[1].grid(True)
 
-# -------------------------------------------------
-# Plot displacement vs x
-# -------------------------------------------------
-fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+    plt.tight_layout()
+    plt.show()
 
-for f in fractions:
-    x_plot = np.array(results[f]["x"])
-    ux_plot = np.array(results[f]["ux"])
-    uy_plot = np.array(results[f]["uy"])
+    # -------------------------------------------------
+    # Optional: show the actual sampling curves in the nozzle
+    # -------------------------------------------------
+    plt.figure(figsize=(10, 4))
+    plt.scatter(x, y, s=2, color='lightgray', label='BOS grid')
 
-    idx = np.argsort(x_plot)
-    x_plot = x_plot[idx]
-    ux_plot = ux_plot[idx]
-    uy_plot = uy_plot[idx]
+    for f in fractions:
+        x_plot = np.array(results[f]["x"])
+        y_plot = np.array(results[f]["y_target"])
 
-    label = f"y / y_min(x) = {f:.2f}"
+        idx = np.argsort(x_plot)
+        plt.plot(x_plot[idx], y_plot[idx], label=f"y / y_min(x) = {f:.2f}")
 
-    axes[0].plot(x_plot, ux_plot, label=label)
-    axes[1].plot(x_plot, uy_plot, label=label)
-
-axes[0].set_ylabel("x-displacement")
-axes[0].set_title("x-displacement vs x (lower side)")
-axes[0].grid(True)
-axes[0].legend()
-
-axes[1].set_ylabel("y-displacement")
-axes[1].set_xlabel("x")
-axes[1].set_title("y-displacement vs x (lower side)")
-axes[1].grid(True)
-
-plt.tight_layout()
-plt.show()
-
-# -------------------------------------------------
-# Optional: show the actual sampling curves in the nozzle
-# -------------------------------------------------
-plt.figure(figsize=(10, 4))
-plt.scatter(x, y, s=2, color='lightgray', label='BOS grid')
-
-for f in fractions:
-    x_plot = np.array(results[f]["x"])
-    y_plot = np.array(results[f]["y_target"])
-
-    idx = np.argsort(x_plot)
-    plt.plot(x_plot[idx], y_plot[idx], label=f"y / y_min(x) = {f:.2f}")
-
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title("Sampling curves used for displacement extraction (lower side)")
-plt.axis("equal")
-plt.grid(True)
-plt.legend()
-plt.show()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Sampling curves used for displacement extraction (lower side)")
+    plt.axis("equal")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 
 
-rows = []
+    rows = []
 
-for f in fractions:
-    for i in range(len(results[f]["x"])):
-        rows.append({
-            "fraction": f,
-            "x": results[f]["x"][i],
-            "y": results[f]["y_target"][i],
-            "ux": results[f]["ux"][i],
-            "uy": results[f]["uy"][i]
-        })
+    for f in fractions:
+        for i in range(len(results[f]["x"])):
+            rows.append({
+                "fraction": f,
+                "x": results[f]["x"][i],
+                "y": results[f]["y_target"][i],
+                "ux": results[f]["ux"][i],
+                "uy": results[f]["uy"][i]
+            })
 
-df_out = pd.DataFrame(rows)
-df_out.to_csv("CC_streamline/lower_results.csv", index=False)
+    df_out = pd.DataFrame(rows)
+
+        # -------------------------------------------------
+    # Save CSV if requested
+    # -------------------------------------------------
+    if output_csv_path is not None:
+        df_out.to_csv(output_csv_path, index=False)
+
+
