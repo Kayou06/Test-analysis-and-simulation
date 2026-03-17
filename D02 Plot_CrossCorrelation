@@ -4,8 +4,8 @@ import numpy as np
 
 
 #Select the correct file path
-df_BOS = pd.read_csv('Raw_Pictures_Wavelet\BOS_12_11_7\BOS_12_11_70001.csv',delimiter=';') # BOS data
-df_corr = pd.read_csv('Raw_Pictures_Wavelet\BOS_12_11_7\cross_correction0001.csv',delimiter=';')  # correlation of crosses     
+df_BOS = pd.read_csv('Raw_Pictures_Wavelet/BOS_12_11_7/BOS_12_11_70001.csv',delimiter=';') # BOS data
+df_corr = pd.read_csv('Raw_Pictures_Wavelet/BOS_12_11_7/cross_correction0001.csv',delimiter=';')  # correlation of crosses     
 
 # Cross Correlation Plot
 x = df_BOS['x']
