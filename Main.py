@@ -30,7 +30,7 @@ if __name__ == "__main__":
         #temperature of 220 degrees C
         temp = 220
         ref_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_{temp}C_reference.tif")
-    if image_no == 3 or image_no == 4 or image_no == 5 or image_no == 6 or image_no == 7:
+    elif image_no == 3 or image_no == 4 or image_no == 5 or image_no == 6 or image_no == 7:
         #temperature of 252 degrees C
         temp = 252
         ref_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_{temp}C_reference.tif")
@@ -82,7 +82,12 @@ if __name__ == "__main__":
     # mask_point = mask_points(ref_img,"BOS_12_11_1_mask.npy")
 
     # # If a mask already exists, use this line, adjust the name based on the npy file created
-    mask_point = np.load(f"Mask_shapes/BOS_12_11_{image_no}_mask.npy")
+    if image_no == 1 or image_no == 2:
+        mask_point = np.load(f"Mask_shapes/theBOSmask220C.npy")
+    else:
+        mask_point = np.load(f)
+
+    
     mask_len = np.size(mask_point)
     mask_point = mask_point.reshape(int(mask_len/2),2)
 
