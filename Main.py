@@ -22,7 +22,7 @@ from quick_plot import plot_midplane
 root = os.getcwd()
 
 if __name__ == "__main__":
-    image_no = int(input("Enter the image number: "))
+    image_no = int(input("Enter the image number (1-7): "))
 
 
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
