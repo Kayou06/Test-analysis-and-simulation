@@ -29,9 +29,11 @@ if __name__ == "__main__":
     if image_no == 1 or image_no == 2:
         #temperature of 220 degrees C
         ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_220C_reference.tif")
-    else:
+    if image_no == 3 or image_no == 4 or image_no == 5 or image_no == 6 or image_no == 7:
         #temperature of 252 degrees C
         ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_252C_reference.tif")
+    else:
+        raise NameError("Image number not defined or invalid")
 
 
     '''Next parts contain optional plotting and visualization of images'''
