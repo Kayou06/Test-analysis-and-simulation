@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def extract_upper_streamlines(
+def streamline_lower(
     csv_path,
     output_csv_path=None,
     fractions=None,

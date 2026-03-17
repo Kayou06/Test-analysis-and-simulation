@@ -18,6 +18,9 @@ from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
 from D02_cross_correction import cross_correction
 from d02_display_field import *
 from quick_plot import plot_midplane
+from Streamlinefunction_lower import streamline_lower
+from Streamlinefunction_upper import streamline_upper
+from Streamline_comparison import compare_streamlines
 
 root = os.getcwd()
 
@@ -160,3 +163,8 @@ if __name__ == "__main__":
 
     #TODO update display_many_fields
     display_many_fields_object([(u, v, mask, "Run 1"),(u_corr, v_corr, mask, "Run 2")])
+
+
+    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
