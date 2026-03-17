@@ -65,7 +65,7 @@ runs = [
 
      ("VF BOS_12_11_1 (220)/u_HS_alpha15_blur5.npy",
      "VF BOS_12_11_1 (220)/v_HS_alpha15_blur5.npy",
-     "Correlable_pics/BOS_12_11_ref_masked.tif",
+     r"Correlable_pics/BOS_12_11_ref_masked.tif",
      "Run 3"),
 ]
 

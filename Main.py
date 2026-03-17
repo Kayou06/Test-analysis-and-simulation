@@ -28,10 +28,12 @@ if __name__ == "__main__":
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
     if image_no == 1 or image_no == 2:
         #temperature of 220 degrees C
-        ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_220C_reference.tif")
+        temp = 220
+        ref_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_{temp}C_reference.tif")
     if image_no == 3 or image_no == 4 or image_no == 5 or image_no == 6 or image_no == 7:
         #temperature of 252 degrees C
-        ref_img = cv.imread("Raw_Pictures_Wavelet/BOS_252C_reference.tif")
+        temp = 252
+        ref_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_{temp}C_reference.tif")
     else:
         raise NameError("Image number not defined or invalid")
 
@@ -124,21 +126,22 @@ if __name__ == "__main__":
     blur =  11
     blur_type = "median" #blur type is either "gaussian" or "median"
 
-    # Compute and correct vector fields
+    '''Either compute a NEW vector field or load an EXISTING vector field'''
+
+    # Compute and correct vector fields - COMMENT OUT IF NOT NECESSARY
     u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
     u_corr, v_corr = cross_correction(u, v)
+    # Save vector fields - COMMENT OUT IF NOT NECESSARY
+    np.save(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
+    np.save(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
+    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
+    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
 
-    # Save vector fields
-    np.save(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
-    np.save(f"VF BOS_12_11_1 (220) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_1 (220) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
-
-    u_path = f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy"
-    v_path = f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy"
-    u = np.load(f"VF BOS_12_11_1 (220)/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    v = np.load(f"VF BOS_12_11_1 (220)/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-
+    # Load already existing vector fields - COMMENT OUT IF NOT NECESSARY
+    u = np.load(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    v = np.load(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
 
     # # Visualize the results
@@ -151,4 +154,4 @@ if __name__ == "__main__":
     plt.show()
 
     #TODO update display_many_fields
-    display_many_fields(u_path, v_path, "u_corr.npy", "v_corr.npy")
+    display_many_fields_object(u, v, u_corr, v_corr)
