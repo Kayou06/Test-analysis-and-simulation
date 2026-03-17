@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # mask_point = mask_points(ref_img,"BOS_12_11_1_mask.npy")
 
     # # If a mask already exists, use this line, adjust the name based on the npy file created
-    mask_point = np.load("Mask_shapes/BOS_12_11_1_mask.npy")
+    mask_point = np.load(f"Mask_shapes/BOS_12_11_{image_no}_mask.npy")
     mask_len = np.size(mask_point)
     mask_point = mask_point.reshape(int(mask_len/2),2)
 
@@ -103,8 +103,8 @@ if __name__ == "__main__":
     work_img_final = work_img_final[min_y:max_y,:]
 
     # Save the masked images 
-    cv.imwrite('Correlable_pics/BOS_12_11_1_masked.tif', work_img_final)
-    cv.imwrite('Correlable_pics/BOS_12_11_ref_masked.tif', ref_img_final)
+    cv.imwrite(f'Correlable_pics/BOS_12_11_{image_no}_masked.tif', work_img_final)
+    cv.imwrite('Correlable_pics/BOS_12_11_ref_masked ({temp}C).tif', ref_img_final)
 
     # OPTIONAL visualize the masked images
     # plt.subplot(1,2,1)
@@ -143,10 +143,10 @@ if __name__ == "__main__":
     u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
     v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
+    '''NEXT SECTION IS FOR VISUALIZING RESULTS'''
 
     # # Visualize the results
     # draw_quiver(u_corr,v_corr,ref_img_final)
-
 
     plot_midplane(v,'original')
     plot_midplane(v_corr,'corrected')
@@ -154,4 +154,4 @@ if __name__ == "__main__":
     plt.show()
 
     #TODO update display_many_fields
-    display_many_fields_object(u, v, u_corr, v_corr)
+    display_many_fields_object([(u, v, mask, "Run 1"),(u_corr, v_corr, mask, "Run 2")])
