@@ -31,48 +31,66 @@ def compare_streamlines(
     # merged["uy_avg"] = (merged["uy_upper"] - merged["uy_lower"]) / 2
 
     fractions = sorted(merged["fraction"].unique())
+    num_fracs = len(fractions)
 
     # -------------------------------------------------
-    # Plot averaged displacement vs x
+    # Dynamically create a grid: Rows = num_fracs, Columns = 2
     # -------------------------------------------------
-    fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+    # figsize scales automatically so the graphs don't get squished
+    fig, axes = plt.subplots(nrows=num_fracs, ncols=2, figsize=(12, 4 * num_fracs), sharex=True)
 
-    for f in fractions:
+    # Edge case: If there's only 1 fraction, wrap axes in a list so the indexing still works
+    if num_fracs == 1:
+        axes = np.array([axes])
+
+    # Loop through the fractions, keeping track of the row index (row_idx)
+    for row_idx, f in enumerate(fractions):
+        subset = merged[merged["fraction"] == f]
+
+        x = subset["x"].to_numpy()
+        idx = np.argsort(x)
+        x_sorted = x[idx]
+
+        # Extract raw upper and lower data
+        ux_up = subset["ux_upper"].to_numpy()[idx]
+        uy_up = subset["uy_upper"].to_numpy()[idx]
         
-        if math.isclose(f, 0.5, rel_tol=1e-5):
-            
-            subset = merged[merged["fraction"] == f]
+        ux_low = subset["ux_lower"].to_numpy()[idx]
+        uy_low = subset["uy_lower"].to_numpy()[idx]
 
-            x = subset["x"].to_numpy()
-            idx = np.argsort(x)
-            x_sorted = x[idx]
+        # Target the specific subplots for this row
+        ax_x = axes[row_idx, 0] # Left column: X-displacement
+        ax_y = axes[row_idx, 1] # Right column: Y-displacement
 
-            # Extract raw upper and lower data
-            ux_up = subset["ux_upper"].to_numpy()[idx]
-            uy_up = subset["uy_upper"].to_numpy()[idx]
-            
-            ux_low = subset["ux_lower"].to_numpy()[idx]
-            uy_low = subset["uy_lower"].to_numpy()[idx]
+        # Plot Upper (Dashed line)
+        ax_x.plot(x_sorted, ux_up, '--', linewidth=2, label=f"Upper {f}")
+        ax_y.plot(x_sorted, uy_up, '--', linewidth=2, label=f"Upper {f}")
 
-            # Plot Upper (Dashed line)
-            axes[0].plot(x_sorted, ux_up, '--', linewidth=2, label=f"Upper {f} Raw")
-            axes[1].plot(x_sorted, uy_up, '--', linewidth=2, label=f"Upper {f} Raw")
+        # Plot Lower (Dotted line)
+        ax_x.plot(x_sorted, ux_low, ':', linewidth=2, label=f"Lower {f}")
+        ax_y.plot(x_sorted, uy_low, ':', linewidth=2, label=f"Lower {f}")
 
-            # Plot Lower (Dotted line)
-            axes[0].plot(x_sorted, ux_low, ':', linewidth=2, label=f"Lower {f} Raw")
-            # Note: You might want to plot -uy_low if you want it to visually mirror the upper y-displacement
-            axes[1].plot(x_sorted, uy_low, ':', linewidth=2, label=f"Lower {f} Raw")
+        # Format the X-displacement plot (Left Column)
+        ax_x.set_ylabel("x-displacement")
+        ax_x.set_title(f"X-Displacements (y/y_max = ±{f})")
+        ax_x.grid(True)
+        ax_x.legend()
 
-    axes[0].set_ylabel("x-displacement")
-    axes[0].set_title("Streamline Displacements (y/y_max = ±0.5)")
-    axes[0].grid(True)
-    axes[0].legend()
+        # Format the Y-displacement plot (Right Column)
+        ax_y.set_ylabel("y-displacement")
+        ax_y.set_title(f"Y-Displacements (y/y_max = ±{f})")
+        ax_y.grid(True)
+        ax_y.legend()
 
-    # Formatting Bottom Plot
-    axes[1].set_ylabel("y-displacement")
-    axes[1].set_xlabel("x")
-    axes[1].grid(True)
-    axes[1].legend()
+        # Add x-axis labels ONLY to the very bottom row to keep it clean
+        if row_idx == num_fracs - 1:
+            ax_x.set_xlabel("x")
+            ax_y.set_xlabel("x")
 
+    # Draw the final master grid outside the loop!
     plt.tight_layout()
     plt.show()
+        
+# compare_streamlines(upper_csv_path= f"CC_streamline/upper_results_1.csv",
+#     lower_csv_path=f"CC_streamline/lower_results_1.csv"
+# )
