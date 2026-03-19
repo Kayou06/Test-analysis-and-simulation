@@ -25,5 +25,3 @@ def mask_correction(u, v, mask):
 
     return u, v
 
-    return u, v
-
