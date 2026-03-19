@@ -85,7 +85,7 @@ if __name__ == "__main__":
     if image_no == 1 or image_no == 2:
         mask_point = np.load(f"Mask_shapes/theBOSmask220C.npy")
     else:
-        mask_point = np.load(f)
+        mask_point = np.load(f"Mask_shapes/Mask_252.npy")
 
     
     mask_len = np.size(mask_point)

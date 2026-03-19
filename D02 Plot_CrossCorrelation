@@ -42,3 +42,25 @@ plt.grid(True)
 np.save(F"CC data/displacement_vectors.npy", np.column_stack((x, y, u_final, v_final)))
 
 plt.show()
+
+###################
+
+y_mid = np.mean(y)
+
+midline_mask = (y == y_mid)
+# Extract midline values
+x_mid = x[midline_mask]
+u_mid = u_final[midline_mask]
+v_mid = v_final[midline_mask]
+
+# Sort from left to right
+sort_idx = np.argsort(x_mid)
+x_mid = x_mid[sort_idx]
+u_mid = u_mid[sort_idx]
+v_mid = v_mid[sort_idx]
+
+# Save midline displacements
+midline_df = pd.DataFrame({
+    'x': x_mid,
+    'x_displacement': u_mid,
+    'y_displacement': v_mid}}
