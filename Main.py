@@ -20,7 +20,7 @@ from d02_display_field import *
 from quick_plot import plot_midplane
 from Streamlinefunction_lower import streamline_lower
 from Streamlinefunction_upper import streamline_upper
-# from Streamline_comparison import compare_streamlines
+from Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
 from pathlib import Path
 
@@ -28,6 +28,10 @@ root = os.getcwd()
 
 if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
+
+    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/upper_results_{image_no}.csv")
+    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
 
     '''CONFIGURE PARAMETERS'''
     alpha = 35
@@ -176,11 +180,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-
-    # streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    # streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    # compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
-    
+   
     
     # Use display_many_fields function to plot vector field in the nozzle
     display_many_fields_object([(u, v, ref_img_final, f"Uncorrected vector field at alpha = {alpha}, blur = {blur}"),
