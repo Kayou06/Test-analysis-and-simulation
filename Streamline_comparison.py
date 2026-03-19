@@ -91,6 +91,6 @@ def compare_streamlines(
     plt.tight_layout()
     plt.show()
         
-# compare_streamlines(upper_csv_path= f"CC_streamline/upper_results_1.csv",
-#     lower_csv_path=f"CC_streamline/lower_results_1.csv"
-# )
+compare_streamlines(upper_csv_path= f"CC_streamline/upper_results_1.csv",
+     lower_csv_path=f"CC_streamline/lower_results_1.csv"
+ )
