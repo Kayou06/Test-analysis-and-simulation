@@ -18,9 +18,9 @@ from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
 from D02_cross_correction import cross_correction
 from d02_display_field import *
 from quick_plot import plot_midplane
-from Streamlinefunction_lower import streamline_lower
-from Streamlinefunction_upper import streamline_upper
-from Streamline_comparison import compare_streamlines
+from D02_Streamlinefunction_lower import streamline_lower
+from D02_Streamlinefunction_upper import streamline_upper
+from D02_Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
 from pathlib import Path
  
