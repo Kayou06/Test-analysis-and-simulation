@@ -29,8 +29,8 @@ if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
 
     '''CONFIGURE PARAMETERS'''
-    alpha = 25
-    blur =  5
+    alpha = 35
+    blur =  11
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
 
@@ -158,9 +158,11 @@ if __name__ == "__main__":
         np.save(file3, u_corr)
         np.save(file4, v_corr)
 
+    # Adjust size of u and v arrays
     u, v = reshape(u, v, ref_img_final)
     u_corr, v_corr = reshape(u_corr, v_corr, ref_img_final)
 
+    # Apply mask correction to the vector fields
     u, v = mask_correction(u, v, ref_img_final)
     u_corr, v_corr = mask_correction(u_corr, v_corr, ref_img_final)
 
