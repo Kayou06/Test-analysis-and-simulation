@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import os
 
 #scaling factor from READ ME.txt
-SF = 25.097 #[px/mm]
+scaling = 25.097 #[px/mm]
 
-def cross_correction(u, v, picture_no=1):
+def cross_correction(u, v, picture_no=1, SF=25.097):
 
     # read tutor's cross-corretion data - DEPENDS ON IMAGE
     df_corr = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{picture_no}/cross_correction0001.csv',delimiter=';')      

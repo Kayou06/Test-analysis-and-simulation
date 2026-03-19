@@ -143,4 +143,7 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussi
 
         pbar.close()
 
+    u = cv.resize(u, (cols, rows), interpolation=cv.INTER_LINEAR)
+    v = cv.resize(v, (cols, rows), interpolation=cv.INTER_LINEAR)
+
     return [u, v]
