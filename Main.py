@@ -12,7 +12,7 @@ from video_maker import video_maker
 from Masking import mask_points
 from Masking import shape_isolation
 from OF_plot import *
-from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
+from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal, reshape
 # from blob_detector_function import cross_finder
 # from cross_verification import match_score
 from D02_cross_correction import cross_correction
@@ -22,21 +22,16 @@ from Streamlinefunction_lower import streamline_lower
 from Streamlinefunction_upper import streamline_upper
 from Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
-from pathlib import Path
- 
+
 root = os.getcwd()
 
 if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
 
-    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/upper_results_{image_no}.csv")
-    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
-    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
-
     '''CONFIGURE PARAMETERS'''
     alpha = 35
-    blur =  7
-    blur_type = "gaussian" #blur type is either "gaussian" or "median"
+    blur =  11
+    blur_type = "median" #blur type is either "gaussian" or "median"
 
 
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
@@ -163,7 +158,10 @@ if __name__ == "__main__":
         np.save(file3, u)
         np.save(file4, v)
 
+    u, v = reshape(u, v, ref_img_final)
+    u_corr, v_corr = reshape(u_corr, v_corr, ref_img_final)
 
+    u, v = mask_correction(u, v, ref_img_final)
     u_corr, v_corr = mask_correction(u_corr, v_corr, ref_img_final)
 
 
@@ -180,7 +178,11 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-   
+
+    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    
     
     # Use display_many_fields function to plot vector field in the nozzle
     display_many_fields_object([(u, v, ref_img_final, f"Uncorrected vector field at alpha = {alpha}, blur = {blur}"),
