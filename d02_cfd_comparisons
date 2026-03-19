@@ -1,0 +1,55 @@
+import pyvista as pv
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2 as cv
+from scipy.optimize import curve_fit
+
+
+def tanh_func(x, a, b, c, d):
+    return a * np.tanh(b * (x + c)) + d
+
+
+def get_cfd_values(path):
+    mesh = pv.read(path)
+
+    x = mesh.points[:, 0]
+    density = mesh.point_data["Density"]
+
+    idx = np.argsort(x)
+    x = x[idx]
+    density = density[idx]
+
+    initial_guess = [1.0, 1.0, np.mean(x), np.mean(density)]
+    params, _ = curve_fit(tanh_func, x, density, p0=initial_guess)
+    a, b, c, d = params
+
+    x_fit = np.linspace(min(x), max(x), len(x))
+    density_fit = tanh_func(x_fit, a, b, c, d)
+
+    density_prime =  np.gradient(density_fit, x_fit)
+    # density_prime = np.diff(density, prepend=x[0]) / np.diff(x, prepend=x[0])
+
+    return x, density, x_fit, density_fit, density_prime
+
+
+u = np.load("u_HS.npy")
+v = np.load("v_HS.npy") # V is upwards, U is rightwards
+mask = cv.imread("Correlable_pics/BOS_12_11_ref_masked.tif", cv.IMREAD_GRAYSCALE)
+
+x, density, x_fit, density_fit, density_prime = get_cfd_values("Wavelet_noise_experiments/220/BOS_12_11_1/flow_MUSCL.vtu")
+
+
+plt.scatter(x, density, s=10, label="Data")
+plt.plot(x_fit, density_fit, color="red", label="Fit")
+plt.xlabel("x")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
+
+plt.plot(x_fit, -density_prime, label="Density Gradient")
+plt.xlabel("x")
+plt.ylabel("Density Gradient")
+plt.legend()
+plt.show()
+
+
