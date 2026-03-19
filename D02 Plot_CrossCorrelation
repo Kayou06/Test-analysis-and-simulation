@@ -67,22 +67,29 @@ midline_df = pd.DataFrame({
 })
 midline_df.to_csv("CC data/midline_displacements.csv", index=False)
 
-def epsilon(del_x):
+def drho_dx(del_x):
     C = 5.3
     ZD = 10
     ZA = 1200+40+10
     f = 200
-    eps = del_x*(ZD+ZA+ZA-f)/(C*f*ZD)
+    W = 
+    n0 = 1.000293
+    drho_dx = del_x*n0*(ZD+ZA-f)/(C*W*K*f*ZD)
 
-    return eps
+    return drho_dx
 
-def normalized_epsilon(del_x, del_x_1):
-    eps = epsilon(del_x)
-    eps_max = epsilon(del_x_1)
-    return eps / eps_max
+def normalized_drho_dx(del_x, del_x_1):
+    drho_dx = drho_dx(del_x)
+    drho_dx_max = drho_dx(del_x_1)
+    return drho_dx / drho_dx_max
 
-midline_df['epsilon'] = midline_df['x_displacement'].apply(epsilon)
+midline_df['drho_dx'] = midline_df['x_displacement'].apply(drho_dx)
 
-eps_at_x0 = midline_df.loc[midline_df['x'] == 0, 'epsilon'].values[0]
+drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx'].values[0]
 
-midline_df['normalized_epsilon'] = midline_df['epsilon'] / eps_at_x0
+midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
+plt.plot(midline_df.iloc[:, 0], midline_df['normalized_drho_dx'])
+plt.xlabel('x')
+plt.ylabel('Normalized drho/dx')
+plt.title('normalized drho/dx vs x')
+plt.show()
