@@ -20,8 +20,9 @@ from d02_display_field import *
 from quick_plot import plot_midplane
 from Streamlinefunction_lower import streamline_lower
 from Streamlinefunction_upper import streamline_upper
-from Streamline_comparison import compare_streamlines
+# from Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
+from pathlib import Path
 
 root = os.getcwd()
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     '''CONFIGURE PARAMETERS'''
     alpha = 35
     blur =  11
-    blur_type = "median" #blur type is either "gaussian" or "median"
+    blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
 
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
@@ -137,20 +138,27 @@ if __name__ == "__main__":
 
     '''Either compute a NEW vector field or load an EXISTING vector field'''
 
-    # Compute and correct vector fields - COMMENT OUT IF NOT NECESSARY
-    u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
-    u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
-    # Save vector fields - COMMENT OUT IF NOT NECESSARY
-    np.save(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
-    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
+    file1 = Path(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file2 = Path(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file3 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file4 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
-    # # Load already existing vector fields - COMMENT OUT IF NOT NECESSARY
-    # u = np.load(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # v = np.load(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    if file1.exists() and file2.exists() and file3.exists() and file4.exists():
+        # Load already existing vector fields
+        u = np.load(file1)
+        v = np.load(file2)
+        u_corr = np.load(file3)
+        v_corr = np.load(file4)
+    else:
+        # Compute new uncorrected and corrected vector fields
+        u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
+        u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
+        # Save vector fields
+        np.save(file1, u)
+        np.save(file2, v)
+        np.save(file3, u)
+        np.save(file4, v)
+
 
     u_corr, v_corr = mask_correction(u_corr, v_corr, mask_point)
 
@@ -169,9 +177,9 @@ if __name__ == "__main__":
     plt.show()
 
 
-    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    # streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    # streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+    # compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
     
     
     # Use display_many_fields function to plot vector field in the nozzle
