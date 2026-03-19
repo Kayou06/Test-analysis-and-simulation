@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def streamline_upper(
     csv_path,
-    output_csv_path,
+    output_csv_path=None,
     fractions=None,
     make_plots=True
 ):
@@ -200,8 +200,5 @@ def streamline_upper(
         plt.grid(True)
         plt.legend()
         plt.show()
-
-
-
 
     return results, df_out
