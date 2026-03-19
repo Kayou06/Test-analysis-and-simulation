@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def streamline_lower(
     csv_path,
-    output_csv_path,
+    output_csv_path=None,
     fractions=None,
     make_plots=True
 ):
