@@ -21,11 +21,29 @@ from quick_plot import plot_midplane
 from Streamlinefunction_lower import streamline_lower
 from Streamlinefunction_upper import streamline_upper
 from Streamline_comparison import compare_streamlines
+from d02_field_corrections import mask_correction
 
 root = os.getcwd()
 
 if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
+
+
+
+
+    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/upper_results_{image_no}.csv")
+    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv", output_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    
+    
+
+
+
+
+    '''CONFIGURE PARAMETERS'''
+    alpha = 35
+    blur =  11
+    blur_type = "median" #blur type is either "gaussian" or "median"
 
 
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
@@ -88,7 +106,7 @@ if __name__ == "__main__":
     if image_no == 1 or image_no == 2:
         mask_point = np.load(f"Mask_shapes/theBOSmask220C.npy")
     else:
-        mask_point = np.load(f)
+        mask_point = np.load(f"Mask_shapes/theBOSmask252C.npy")
 
     
     mask_len = np.size(mask_point)
@@ -112,7 +130,7 @@ if __name__ == "__main__":
 
     # Save the masked images 
     cv.imwrite(f'Correlable_pics/BOS_12_11_{image_no}_masked.tif', work_img_final)
-    cv.imwrite('Correlable_pics/BOS_12_11_ref_masked ({temp}C).tif', ref_img_final)
+    cv.imwrite(f'Correlable_pics/BOS_12_11_ref_masked ({temp}C).tif', ref_img_final)
 
     # OPTIONAL visualize the masked images
     # plt.subplot(1,2,1)
@@ -129,31 +147,32 @@ if __name__ == "__main__":
     # # The blur is based on the results from my Cross-Correlation pre-processubg
     # # Alpha is based on some trial and error
 
-    '''CONFIGURE PARAMETERS'''
-    alpha = 25
-    blur =  11
-    blur_type = "median" #blur type is either "gaussian" or "median"
-
     '''Either compute a NEW vector field or load an EXISTING vector field'''
 
     # Compute and correct vector fields - COMMENT OUT IF NOT NECESSARY
     u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
-    u_corr, v_corr = cross_correction(u, v)
+    u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
     # Save vector fields - COMMENT OUT IF NOT NECESSARY
     np.save(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
     np.save(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
     np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
     np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
 
-    # Load already existing vector fields - COMMENT OUT IF NOT NECESSARY
-    u = np.load(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    v = np.load(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    # # Load already existing vector fields - COMMENT OUT IF NOT NECESSARY
+    # u = np.load(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    # v = np.load(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    # u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    # v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+
+    u_corr, v_corr = mask_correction(u_corr, v_corr, mask_point)
+
+
+    '''NEXT SECTION IS FOR CROSS-CORRELATION METHOD'''
+
+
 
     '''NEXT SECTION IS FOR VISUALIZING RESULTS'''
 
-    # # Visualize the results
     # draw_quiver(u_corr,v_corr,ref_img_final)
 
     plot_midplane(v,'original')
@@ -161,10 +180,12 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-    #TODO update display_many_fields
-    display_many_fields_object([(u, v, mask, "Run 1"),(u_corr, v_corr, mask, "Run 2")])
 
-
-    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+#    streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+ #  streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+  #  compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+    
+    
+    # Use display_many_fields function to plot vector field in the nozzle
+    display_many_fields_object([(u, v, ref_img_final, f"Uncorrected vector field at alpha = {alpha}, blur = {blur}"),
+                                (u_corr, v_corr, ref_img_final, f"Corrected vector field at alpha = {alpha}, blur = {blur}")])
