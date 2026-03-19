@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     '''CONFIGURE PARAMETERS'''
     alpha = 35
-    blur =  11
+    blur =  7
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
 
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         np.save(file4, v)
 
 
-    u_corr, v_corr = mask_correction(u_corr, v_corr, mask_point)
+    u_corr, v_corr = mask_correction(u_corr, v_corr, ref_img_final)
 
 
     '''NEXT SECTION IS FOR CROSS-CORRELATION METHOD'''
