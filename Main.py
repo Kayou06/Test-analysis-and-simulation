@@ -29,9 +29,9 @@ if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
 
     '''CONFIGURE PARAMETERS'''
-    alpha = 35
-    blur =  11
-    blur_type = "median" #blur type is either "gaussian" or "median"
+    alpha = 25
+    blur =  5
+    blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
 
     work_img = cv.imread(f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif")
@@ -155,8 +155,8 @@ if __name__ == "__main__":
         # Save vector fields
         np.save(file1, u)
         np.save(file2, v)
-        np.save(file3, u)
-        np.save(file4, v)
+        np.save(file3, u_corr)
+        np.save(file4, v_corr)
 
     u, v = reshape(u, v, ref_img_final)
     u_corr, v_corr = reshape(u_corr, v_corr, ref_img_final)
