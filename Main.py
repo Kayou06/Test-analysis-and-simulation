@@ -12,7 +12,7 @@ from video_maker import video_maker
 from Masking import mask_points
 from Masking import shape_isolation
 from OF_plot import *
-from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal
+from Pyramidal_Horn_Schunck_tqdm import HS_pyramidal, reshape
 # from blob_detector_function import cross_finder
 # from cross_verification import match_score
 from D02_cross_correction import cross_correction
@@ -137,22 +137,32 @@ if __name__ == "__main__":
 
     '''Either compute a NEW vector field or load an EXISTING vector field'''
 
-    # Compute and correct vector fields - COMMENT OUT IF NOT NECESSARY
-    u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
-    u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
-    # Save vector fields - COMMENT OUT IF NOT NECESSARY
-    np.save(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
-    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", u)
-    np.save(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy", v)
+    file1 = Path(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file2 = Path(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file3 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file4 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
-    # # Load already existing vector fields - COMMENT OUT IF NOT NECESSARY
-    # u = np.load(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # v = np.load(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # u_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-    # v_corr = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    if file1.exists() and file2.exists() and file3.exists() and file4.exists():
+        # Load already existing vector fields
+        u = np.load(file1)
+        v = np.load(file2)
+        u_corr = np.load(file3)
+        v_corr = np.load(file4)
+    else:
+        # Compute new uncorrected and corrected vector fields
+        u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
+        u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
+        # Save vector fields
+        np.save(file1, u)
+        np.save(file2, v)
+        np.save(file3, u)
+        np.save(file4, v)
 
-    u_corr, v_corr = mask_correction(u_corr, v_corr, mask_point)
+    u, v = reshape(u, v, ref_img_final)
+    u_corr, v_corr = reshape(u_corr, v_corr, ref_img_final)
+
+    u, v = mask_correction(u, v, ref_img_final)
+    u_corr, v_corr = mask_correction(u_corr, v_corr, ref_img_final)
 
 
     '''NEXT SECTION IS FOR CROSS-CORRELATION METHOD'''
