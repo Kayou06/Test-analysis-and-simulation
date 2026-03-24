@@ -72,13 +72,19 @@ def calc_drho_dx(del_x, rho):
     return result
 
 plt.figure()
-for i in range(len(rho0)):
-    midline_df['drho_dx'] = midline_df.apply(calc_drho_dx(row['x_displacement'],rho0[i]))
+for rho in rho0:
+    # FIX 1: Call function directly on the Series (no .apply needed)
+    drho_dx = calc_drho_dx(midline_df['x_displacement'], rho)
+    midline_df['drho_dx'] = drho_dx
 
-    drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
-    print(drho_dx_at_x0)
+    # FIX 2: Use np.isclose to safely find the row nearest to x=0
+    closest_idx = (midline_df['x'] - 0).abs().argmin()
+    drho_dx_at_x0 = midline_df.loc[closest_idx, 'drho_dx']  # scalar
+
+    # FIX 3: Divide by scalar directly
     midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
-    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'])
+
+    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'], label=f'rho0={rho:.1f}')
 
 
 plt.xlabel('x')
