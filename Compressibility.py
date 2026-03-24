@@ -1,7 +1,7 @@
 import CoolProp.CoolProp as CP
 
 def compressibility_factor_and_density():
-    temperature =  temperature = [221.8,219.8, 248.5, 248.5, 254, 252.9,251]
+    temperature = [221.8,219.8, 248.5, 248.5, 254, 252.9,251]
     t_kelvin = [temp + 273.15 for temp in temperature]
 
     pressure = [ 8.09, 12.04,  18.50, 19.95,15.9,12.06,9.08 ]
