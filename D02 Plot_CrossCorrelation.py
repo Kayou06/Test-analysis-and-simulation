@@ -56,9 +56,16 @@ midline_df = pd.DataFrame({
     'x_displacement': u_mid,
     'y_displacement': v_mid
 })
+
+#test
 print(midline_df)
+
+
+
 midline_df.to_csv("CC data/midline_displacements.csv", index=False)
 rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
+
+
 # FIX 1: Rename internal variable to avoid conflict with function name
 def calc_drho_dx(del_x, rho):
     C = 5.3
@@ -73,7 +80,7 @@ def calc_drho_dx(del_x, rho):
 
 plt.figure()
 for i in range(len(rho0)):
-    midline_df['drho_dx'] = midline_df.apply(calc_drho_dx(row['x_displacement'],rho0[i]))
+    midline_df['drho_dx'] = midline_df.apply(lambda row: calc_drho_dx(row['x_displacement'], rho0[i]), axis=1)
 
     drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
     print(drho_dx_at_x0)
