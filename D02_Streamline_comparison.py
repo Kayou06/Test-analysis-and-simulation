@@ -24,12 +24,6 @@ def compare_streamlines(
         suffixes=("_upper", "_lower")
     )
 
-    # -------------------------------------------------
-    # Compute averaged fields
-    # -------------------------------------------------
-    # merged["ux_avg"] = (merged["ux_upper"] + merged["ux_lower"]) / 2
-    # merged["uy_avg"] = (merged["uy_upper"] - merged["uy_lower"]) / 2
-
     fractions = sorted(merged["fraction"].unique())
     num_fracs = len(fractions)
 
@@ -87,10 +81,9 @@ def compare_streamlines(
             ax_x.set_xlabel("x")
             ax_y.set_xlabel("x")
 
-    # Draw the final master grid outside the loop!
     plt.tight_layout()
     plt.show()
         
-# compare_streamlines(upper_csv_path= f"CC_streamline/upper_results_1.csv",
-#     lower_csv_path=f"CC_streamline/lower_results_1.csv"
-# )
+compare_streamlines(upper_csv_path= f"CC_streamline/upper_results_1.csv",
+     lower_csv_path=f"CC_streamline/lower_results_1.csv"
+ )
