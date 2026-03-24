@@ -85,7 +85,8 @@ for i in range(len(rho0)):
     drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
     print(drho_dx_at_x0)
     midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
-    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'])
+
+    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'], label=f'rho0={rho:.1f}')
 
 
 plt.xlabel('x')
