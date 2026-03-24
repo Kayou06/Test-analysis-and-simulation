@@ -1,0 +1,16 @@
+from D02_Streamlinefunction_upper import streamline_upper
+from D02_Streamlinefunction_lower import streamline_lower
+from D02_Streamline_comparison import compare_streamlines
+array = [1,2,3,4,5,6,7]
+for i in array:
+    print(f"Processing image {i}...")
+    streamline_upper(
+    csv_path=f"CC Data/displacement_vectors{i}.csv",
+    output_csv_path=f"CC_streamline/upper_results_{i}.csv",
+    make_plots=None
+)
+    streamline_lower(
+    csv_path=f"CC Data/displacement_vectors{i}.csv",
+    output_csv_path=f"CC_streamline/lower_results_{i}.csv",
+    make_plots=None
+)
