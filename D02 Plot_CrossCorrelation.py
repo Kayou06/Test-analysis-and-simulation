@@ -37,8 +37,8 @@ np.save("CC data/displacement_vectors.npy", np.column_stack((x, y, u_final, v_fi
 plt.show()
 
 # Midline extraction
-y_mid = np.mean(y)
-midline_mask = (y == y_mid)
+y_mid = y.iloc[(y - 0).abs().argmin()]
+midline_mask = np.isclose(y, y_mid)
 
 x_mid = x[midline_mask]
 u_mid = u_final[midline_mask]
@@ -58,30 +58,29 @@ midline_df = pd.DataFrame({
 })
 print(midline_df)
 midline_df.to_csv("CC data/midline_displacements.csv", index=False)
-
+rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
 # FIX 1: Rename internal variable to avoid conflict with function name
-def calc_drho_dx(del_x):
+def calc_drho_dx(del_x, rho):
     C = 5.3
     ZD = 0.010
     ZA = 1.250
     f = 0.200
     W = 0.020
     K = 4.5*10**-4
-    rho = 
     n0 = K*rho+1
     result = del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
     return result
 
-midline_df['drho_dx'] = midline_df['x_displacement'].apply(calc_drho_dx)
-
-# FIX 2: Extract scalar with .values[0], fall back to nearest if x=0 not found
-drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
-print(drho_dx_at_x0)
-midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
-
-# Plot
 plt.figure()
-plt.plot(midline_df['x'], midline_df['normalized_drho_dx'])
+for i in range(len(rho0)):
+    midline_df['drho_dx'] = midline_df.apply(calc_drho_dx(row['x_displacement'],rho0[i]))
+
+    drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
+    print(drho_dx_at_x0)
+    midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
+    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'])
+
+
 plt.xlabel('x')
 plt.ylabel('Normalized drho/dx')
 plt.title('Normalized drho/dx vs x')
