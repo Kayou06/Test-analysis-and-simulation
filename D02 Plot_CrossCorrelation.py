@@ -56,6 +56,7 @@ midline_df = pd.DataFrame({
     'x_displacement': u_mid,
     'y_displacement': v_mid
 })
+print(midline_df)
 midline_df.to_csv("CC data/midline_displacements.csv", index=False)
 
 # FIX 1: Rename internal variable to avoid conflict with function name
@@ -66,16 +67,16 @@ def calc_drho_dx(del_x):
     f = 0.200
     W = 0.020
     K = 4.5*10**-4
-    n0 = 1.000293
+    rho = 
+    n0 = K*rho+1
     result = del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
     return result
 
 midline_df['drho_dx'] = midline_df['x_displacement'].apply(calc_drho_dx)
 
 # FIX 2: Extract scalar with .values[0], fall back to nearest if x=0 not found
-drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx'].values[0]
-
-
+drho_dx_at_x0 = midline_df.loc[midline_df['x'] == 0, 'drho_dx']
+print(drho_dx_at_x0)
 midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
 
 # Plot
