@@ -2,16 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+from Compressibility import compressibility_factor_and_density
 
-rho0 = [
-    40.27772187279685,
-    75.04027767585774,
-    139.0060691158923,
-    209.16092353098253,
-    91.60892909471781,
-    59.861281984102675,
-    41.428026313530424
-]
+Z, rho0 = compressibility_factor_and_density()
+
 
 bos_files = [
     'Raw_Pictures_Wavelet/BOS_12_11_1/BOS_12_11_10001.csv',

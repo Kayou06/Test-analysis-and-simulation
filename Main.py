@@ -22,6 +22,7 @@ from quick_plot import plot_midplane
 # from D02_Streamlinefunction_upper import streamline_upper
 # from D02_Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
+from D02_OF_densitygrad import pixel_to_coords, build_dataframe
 
 # Highest to lowest compressibility factor:
 # 7 - 1 - 6 - 2 & 5 - 3 - 4
@@ -196,3 +197,4 @@ if __name__ == "__main__":
     # Use display_many_fields function to plot vector field in the nozzle
     display_many_fields_object([(u, v, ref_img_final, f"Uncorrected vector field at alpha = {alpha}, blur = {blur}"),
                                 (u_corr, v_corr, ref_img_final, f"Corrected vector field at alpha = {alpha}, blur = {blur}")])
+    
