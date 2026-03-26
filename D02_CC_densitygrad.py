@@ -170,15 +170,15 @@ x, y, density_gradient = calc_density_gradient_all_points(
 fig, ax = plt.subplots(figsize=(16, 4))
 sc = ax.scatter(x, y, c=density_gradient, s=10)
 
-ax.set_xlabel(r"$x$ [$m$]")
-ax.set_ylabel(r"$y$ [$m$]")
+ax.set_xlabel(r"$x$ [$mm$]")
+ax.set_ylabel(r"$y$ [$mm$]")
 ax.set_title("Density Gradient")
 ax.set_aspect('equal', adjustable='box')
 
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
-cbar.set_label(r"[$kg/m^2$]")
+cbar.set_label(r"[$kg/mm^4$]")
 
-fig.savefig("Density_Gradient.png", dpi=300, bbox_inches="tight")
+fig.savefig("Density_Gradient_cc.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
 
