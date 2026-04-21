@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data
-df_BOS = pd.read_csv(r'CC Data/displacement_vectors1.csv', delimiter=',')
+df_BOS = pd.read_csv(r'CC Data/displacement_vectors5.csv', delimiter=',')
 
 # Extract raw BOS data
 x = df_BOS['x'].to_numpy()
@@ -106,7 +106,7 @@ axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
 axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
-plt.suptitle('Cross Correlation at T = 221.8 \U+00B0 and p0 = 8.09 pa')
+plt.suptitle('Cross Correlation at T = 254 \u00B0 and p0 = 15.9 Pa')
 plt.tight_layout()
 plt.show()
 
