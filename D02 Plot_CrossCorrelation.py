@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
 # Select the correct file path
-for i in range(1,7)
-    df_BOS = pd.read_csv('Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
-    df_corr = pd.read_csv('Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv', delimiter=';')
+for i in range(1,8):
+    df_BOS = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
+    df_corr = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv', delimiter=';')
 
     # Cross Correlation Plot
     x = df_BOS['x']
@@ -66,7 +66,7 @@ for i in range(1,7)
         result = del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
         return result
     # FIX 1: Call function directly on the Series (no .apply needed)
-    drho_dx = calc_drho_dx(midline_df['x_displacement'], rho0[i])
+    drho_dx = calc_drho_dx(midline_df['x_displacement'], rho0[i-1])
     midline_df['drho_dx'] = drho_dx
 
     # FIX 2: Use np.isclose to safely find the row nearest to x=0
@@ -76,7 +76,7 @@ for i in range(1,7)
     # FIX 3: Divide by scalar directly
     midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
 
-    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'], label=f'rho0={rho0[i]}')
+    plt.plot(midline_df['x'], midline_df['normalized_drho_dx'], label=f'rho0={rho0[i-1]}')
 plt.xlabel('x')
 plt.ylabel('Normalized drho/dx')
 plt.title('Normalized drho/dx vs x')
