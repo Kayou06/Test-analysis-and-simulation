@@ -71,8 +71,8 @@ for i in range(len(all_curves)):
     plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 
 plt.xlabel('x')
-plt.ylabel('Normalized drho/dx')
-plt.title('Normalized drho/dx vs x')
+plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
+plt.title(r'Normalized $\frac{d\rho}{dx}$ vs x')
 plt.grid(True)
 plt.show()
 
