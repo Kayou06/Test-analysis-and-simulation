@@ -2,16 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+from Compressibility import compressibility_factor_and_density
 
-rho0 = [
-    40.27772187279685,
-    75.04027767585774,
-    139.0060691158923,
-    209.16092353098253,
-    91.60892909471781,
-    59.861281984102675,
-    41.428026313530424
-]
+Z, rho0 = compressibility_factor_and_density()
+
 
 bos_files = [
     'Raw_Pictures_Wavelet/BOS_12_11_1/BOS_12_11_10001.csv',
@@ -34,7 +28,11 @@ corr_files = [
 ]
 
 
-def calc_drho_dx(del_x, rho):
+import numpy as np
+import pandas as pd
+
+
+def calc_drho_d(displacement, rho):
     C = 5.3
     ZD = 0.010
     ZA = 1.250
@@ -42,7 +40,36 @@ def calc_drho_dx(del_x, rho):
     W = 0.020
     K = 4.5e-4
     n0 = K * rho + 1
-    return del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
+    return displacement * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
+
+
+def extract_all_displacements(bos_file, corr_file):
+    df_BOS = pd.read_csv(bos_file, delimiter=';')
+    df_corr = pd.read_csv(corr_file, delimiter=';')
+
+    x = df_BOS['x'].to_numpy()
+    y = df_BOS['y'].to_numpy()
+    u = df_BOS['x-displacement'].to_numpy()
+    v = df_BOS['y-displacement'].to_numpy()
+
+    u_corr = df_corr['x-displacement'].mean()
+    v_corr = df_corr['y-displacement'].mean()
+
+    u_final = u - u_corr
+    v_final = v - v_corr
+
+    return x, y, u_final, v_final
+
+
+def calc_density_gradient_all_points(bos_file, corr_file, rho):
+    x, y, u_final, v_final = extract_all_displacements(bos_file, corr_file)
+
+    drho_dx = calc_drho_d(u_final, rho)
+    drho_dy = calc_drho_d(v_final, rho)
+
+    density_gradient = np.sqrt(drho_dx**2 + drho_dy**2)
+
+    return x, y, density_gradient
 
 
 def extract_midline_displacement(bos_file, corr_file):
@@ -81,7 +108,7 @@ def extract_midline_displacement(bos_file, corr_file):
 
     return midline_df
 
-
+'''
 # -------------------------------------------------
 # Plot drho/dx for all 7 files
 # -------------------------------------------------
@@ -124,3 +151,28 @@ plt.title('Normalized drho/dx vs x for 7 BOS files')
 plt.grid(True)
 plt.legend()
 plt.show()
+'''
+
+# Full Density Gradient Plot
+
+x, y, density_gradient = calc_density_gradient_all_points(
+    bos_files[0],
+    corr_files[0],
+    rho0[0]
+)
+
+fig, ax = plt.subplots(figsize=(16, 4))
+sc = ax.scatter(x, y, c=density_gradient, s=10)
+
+ax.set_xlabel(r"$x$ [$mm$]")
+ax.set_ylabel(r"$y$ [$mm$]")
+ax.set_title("Density Gradient")
+ax.set_aspect('equal', adjustable='box')
+
+cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
+cbar.set_label(r"[$kg/mm^4$]")
+
+fig.savefig("Density_Gradient_cc.png", dpi=300, bbox_inches="tight")
+plt.show()
+plt.close(fig)
+
