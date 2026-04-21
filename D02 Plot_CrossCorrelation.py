@@ -113,3 +113,8 @@ plt.ylabel('Normalized drho/dx')
 plt.title('Normalized drho/dx vs x')
 plt.grid(True)
 plt.show()
+
+all_curves = np.array([calc_drho_dx(midline_df['x_displacement'], rho).to_numpy() for rho in rho0])
+max_distance = (all_curves.max(axis=0) - all_curves.min(axis=0)).max()
+
+print("Max distance between curves:", max_distance)
