@@ -71,7 +71,7 @@ for i in range(1, 8):
     closest_idx = (midline_df['x'] - 0).abs().argmin()
     drho_dx_at_x0 = midline_df.loc[closest_idx, 'drho_dx']
 
-    midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
+    midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / rho0[i - 1]
 
     all_x.append(midline_df['x'].to_numpy())
     all_y_raw.append(midline_df['drho_dx'].to_numpy())
