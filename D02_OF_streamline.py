@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data
-df_BOS = pd.read_csv(r'CC Data/displacement_vectors5.csv', delimiter=',')
+df_BOS = pd.read_csv(r'OF_dataframes/BOS_12_11_1 (220C) df with alpha 35, gaussian blur 11.csv', delimiter=',')
 
 # Extract raw BOS data
 x = df_BOS['x'].to_numpy()
