@@ -106,8 +106,9 @@ axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
 axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
-plt.suptitle('Cross Correlation at T = 254 \u00B0 and p0 = 15.9 Pa')
+plt.suptitle('Cross Correlation Displacements at T = 254 \u00B0 and p0 = 15.9 Pa')
 plt.tight_layout()
+plt.savefig("FINAL PLOTS/Displacements/CC-displacements_BOS_12_11_1(UNCLEAR).png", dpi=300, bbox_inches="tight")
 plt.show()
 
 # Optional: show the actual sampling curves in the nozzle
@@ -123,8 +124,9 @@ for f in fractions:
 
 plt.xlabel("x")
 plt.ylabel("y")
-plt.title("Sampling curves used for displacement extraction")
+plt.title("Sampling Curves used for Displacements Extraction")
 plt.axis("equal")
 plt.grid(True)
 plt.legend()
+plt.savefig("FINAL PLOTS/Displacements/sampling_curves_BOS_12_11_1(UNCLEAR).png", dpi=300, bbox_inches="tight")
 plt.show()

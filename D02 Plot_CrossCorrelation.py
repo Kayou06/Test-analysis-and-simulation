@@ -1,8 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
+rho0 = [
+    40.27772187279685,
+    75.04027767585774,
+    139.0060691158923,
+    209.16092353098253,
+    91.60892909471781,
+    59.861281984102675,
+    41.428026313530424
+]
 
 def calc_drho_dx(del_x, rho):
     C = 5.3
@@ -10,16 +19,23 @@ def calc_drho_dx(del_x, rho):
     ZA = 1.250
     f = 0.200
     W = 0.020
-    K = 4.5*10**-4
-    n0 = K*rho+1
+    K = 4.5 * 10**-4
+    n0 = K * rho + 1
     return del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
 
 all_x = []
-all_y = []
+all_y_raw = []
+all_y_normalized = []
 
 for i in range(1, 8):
-    df_BOS = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
-    df_corr = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv', delimiter=';')
+    df_BOS = pd.read_csv(
+        f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv',
+        delimiter=';'
+    )
+    df_corr = pd.read_csv(
+        f'Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv',
+        delimiter=';'
+    )
 
     x = df_BOS['x']
     y = df_BOS['y']
@@ -50,8 +66,7 @@ for i in range(1, 8):
         'y_displacement': v_mid
     })
 
-    drho_dx = calc_drho_dx(midline_df['x_displacement'], rho0[i-1])
-    midline_df['drho_dx'] = drho_dx
+    midline_df['drho_dx'] = calc_drho_dx(midline_df['x_displacement'], rho0[i - 1])
 
     closest_idx = (midline_df['x'] - 0).abs().argmin()
     drho_dx_at_x0 = midline_df.loc[closest_idx, 'drho_dx']
@@ -59,24 +74,53 @@ for i in range(1, 8):
     midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
 
     all_x.append(midline_df['x'].to_numpy())
-    all_y.append(midline_df['normalized_drho_dx'].to_numpy())
+    all_y_raw.append(midline_df['drho_dx'].to_numpy())
+    all_y_normalized.append(midline_df['normalized_drho_dx'].to_numpy())
 
 x_common = all_x[0]
 
-all_curves = np.array([
-    np.interp(x_common, all_x[i], all_y[i]) for i in range(len(all_y))
+all_curves_raw = np.array([
+    np.interp(x_common, all_x[i], all_y_raw[i]) for i in range(len(all_y_raw))
 ])
 
-for i in range(len(all_curves)):
-    plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
+all_curves_normalized = np.array([
+    np.interp(x_common, all_x[i], all_y_normalized[i]) for i in range(len(all_y_normalized))
+])
 
-plt.xlabel('x')
-plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
-plt.title(r'Normalized $\frac{d\rho}{dx}$ vs x')
+# Plot non-normalized curves
+plt.figure()
+for i in range(len(all_curves_raw)):
+    plt.plot(x_common, all_curves_raw[i], label=f'rho0={rho0[i]}')
+
+plt.xlabel(r'x')
+plt.ylabel(r'$\frac{d\rho}{dx}$')
+plt.title(r'$\frac{d\rho}{dx}$ vs x')
+plt.legend()
 plt.grid(True)
+plt.savefig(f"FINAL PLOTS/Midline Density Gradient/CC-densitygrad_y0.png", dpi=300)
 plt.show()
 
-distance = all_curves.max(axis=0) - all_curves.min(axis=0)
-max_distance = distance.max()
+# Plot normalized curves
+plt.figure()
+for i in range(len(all_curves_normalized)):
+    plt.plot(x_common, all_curves_normalized[i], label=f'rho0={rho0[i]}')
 
-print("Max distance between normalized curves:", max_distance)
+plt.xlabel(r'x')
+plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
+plt.title(r'Normalized $\frac{d\rho}{dx}$ vs x')
+plt.legend()
+plt.grid(True)
+plt.savefig(f"FINAL PLOTS/Midline Density Gradient/CC-Normalized_densitygrad_y0.png", dpi=300)
+plt.show()
+
+# Max distance between normalized curves
+distance_normalized = all_curves_normalized.max(axis=0) - all_curves_normalized.min(axis=0)
+max_distance_normalized = distance_normalized.max()
+
+print("Max distance between normalized curves:", max_distance_normalized)
+
+# Max distance between non-normalized curves
+distance_raw = all_curves_raw.max(axis=0) - all_curves_raw.min(axis=0)
+max_distance_raw = distance_raw.max()
+
+print("Max distance between non-normalized curves:", max_distance_raw)
