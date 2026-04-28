@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data
-df_BOS = pd.read_csv(r'CC Data/displacement_vectors5.csv', delimiter=',')
+df_BOS = pd.read_csv(r'OF_dataframes/BOS_12_11_1 (220C) df with alpha 35, gaussian blur 15.csv', delimiter=',')
 
 # Extract raw BOS data
 x = df_BOS['x'].to_numpy()
@@ -106,27 +106,25 @@ axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
 axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
-plt.suptitle('Cross Correlation Displacements at T = 254 \u00B0 and p0 = 15.9 Pa')
+plt.suptitle('Test graph: Optical Flow Displacement at alpha = 35, Gaussian blur = 15')
 plt.tight_layout()
-plt.savefig("FINAL PLOTS/Displacements/CC-displacements_BOS_12_11_1(UNCLEAR).png", dpi=300, bbox_inches="tight")
 plt.show()
 
 # Optional: show the actual sampling curves in the nozzle
-plt.figure(figsize=(10, 4))
-plt.scatter(x, y, s=2, color='lightgray', label='BOS grid')
+# plt.figure(figsize=(10, 4))
+# plt.scatter(x, y, s=2, color='lightgray', label='BOS grid')
 
-for f in fractions:
-    x_plot = np.array(results[f]["x"])
-    y_plot = np.array(results[f]["y_target"])
+# for f in fractions:
+#     x_plot = np.array(results[f]["x"])
+#     y_plot = np.array(results[f]["y_target"])
 
-    idx = np.argsort(x_plot)
-    plt.plot(x_plot[idx], y_plot[idx], label=f"y / y_max(x) = {f:.2f}")
+#     idx = np.argsort(x_plot)
+#     plt.plot(x_plot[idx], y_plot[idx], label=f"y / y_max(x) = {f:.2f}")
 
-plt.xlabel("x")
-plt.ylabel("y")
-plt.title("Sampling Curves used for Displacements Extraction")
-plt.axis("equal")
-plt.grid(True)
-plt.legend()
-plt.savefig("FINAL PLOTS/Displacements/sampling_curves_BOS_12_11_1(UNCLEAR).png", dpi=300, bbox_inches="tight")
-plt.show()
+# plt.xlabel("x")
+# plt.ylabel("y")
+# plt.title("Sampling curves used for displacement extraction")
+# plt.axis("equal")
+# plt.grid(True)
+# plt.legend()
+# plt.show()
