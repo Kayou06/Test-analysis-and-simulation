@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load data
-df_BOS = pd.read_csv(r'OF_dataframes/BOS_12_11_1 (220C) df with alpha 35, gaussian blur 11.csv', delimiter=',')
+df_BOS = pd.read_csv(r'OF_dataframes/BOS_12_11_1 (220C) df with alpha 35, gaussian blur 15.csv', delimiter=',')
 
 # Extract raw BOS data
 x = df_BOS['x'].to_numpy()
@@ -106,7 +106,7 @@ axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
 axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
-plt.suptitle('Cross Correlation at T = 254 \u00B0 and p0 = 15.9 Pa')
+plt.suptitle('Test graph: Optical Flow Displacement at alpha = 35, Gaussian blur = 15')
 plt.tight_layout()
 plt.show()
 
