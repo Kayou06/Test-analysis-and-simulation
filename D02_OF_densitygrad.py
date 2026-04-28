@@ -43,26 +43,33 @@ def calc_drho_d(displacement, rho):
     return displacement * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
 
 
-def extract_all_displacements(bos_file, corr_file):
-    df_BOS = pd.read_csv(bos_file, delimiter=';')
-    df_corr = pd.read_csv(corr_file, delimiter=';')
+# def extract_all_displacements(bos_file, corr_file):
+#     df_BOS = pd.read_csv(bos_file, delimiter=';')
+#     df_corr = pd.read_csv(corr_file, delimiter=';')
 
-    x = df_BOS['x'].to_numpy()
-    y = df_BOS['y'].to_numpy()
-    u = df_BOS['x-displacement'].to_numpy()
-    v = df_BOS['y-displacement'].to_numpy()
+#     x = df_BOS['x'].to_numpy()
+#     y = df_BOS['y'].to_numpy()
+#     u = df_BOS['x-displacement'].to_numpy()
+#     v = df_BOS['y-displacement'].to_numpy()
 
-    u_corr = df_corr['x-displacement'].mean()
-    v_corr = df_corr['y-displacement'].mean()
+#     u_corr = df_corr['x-displacement'].mean()
+#     v_corr = df_corr['y-displacement'].mean()
 
-    u_final = u - u_corr
-    v_final = v - v_corr
+#     u_final = u - u_corr
+#     v_final = v - v_corr
 
-    return x, y, u_final, v_final
+#     return x, y, u_final, v_final
 
 
-def calc_density_gradient_all_points(bos_file, corr_file, rho):
-    x, y, u_final, v_final = extract_all_displacements(bos_file, corr_file)
+def calc_density_gradient_all_points(image_no, temp, alpha, blur, blur_type, rho):
+    file = f"OF_dataframes/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
+
+    df_OF = pd.read_csv(file, delimiter=",")
+
+    x = df_OF['x'].to_numpy()
+    y = df_OF['y'].to_numpy()
+    u_final = df_OF['x-displacement'].to_numpy()
+    v_final = df_OF['y-displacement'].to_numpy()
 
     drho_dx = calc_drho_d(u_final, rho)
     drho_dy = calc_drho_d(v_final, rho)
@@ -154,12 +161,15 @@ plt.show()
 '''
 
 # Full Density Gradient Plot
+image_no = 1
+r = rho0[image_no - 1]
+alpha = 35
+blur = 11
+blur_type = "gaussian"
+temp = 220
 
 x, y, density_gradient = calc_density_gradient_all_points(
-    bos_files[0],
-    corr_files[0],
-    rho0[0]
-)
+    image_no=image_no, temp=temp, alpha=alpha, blur=blur, blur_type=blur_type, rho=r)
 
 fig, ax = plt.subplots(figsize=(16, 4))
 sc = ax.scatter(x, y, c=density_gradient, s=10)
@@ -172,7 +182,7 @@ ax.set_aspect('equal', adjustable='box')
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
 cbar.set_label(r"[$kg/mm^4$]")
 
-fig.savefig("FINAL PLOTS/Density Gradients/CC-densitygrad_BOS_12_11_1.png", dpi=300, bbox_inches="tight")
+# fig.savefig("FINAL PLOTS/Density Gradients/CC-densitygrad_BOS_12_11_1.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
 
