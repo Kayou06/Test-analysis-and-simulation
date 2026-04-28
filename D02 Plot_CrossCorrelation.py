@@ -14,9 +14,8 @@ def plot_CC():
         n0 = K*rho+1
         return del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
 
-all_x = []
-all_y_raw = []
-all_y_normalized = []
+    all_x = []
+    all_y = []
 
     for i in range(1, 8):
         df_BOS = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
@@ -59,54 +58,27 @@ all_y_normalized = []
 
         midline_df['normalized_drho_dx'] = (midline_df['drho_dx'] / rho0[i-1])
 
-    all_x.append(midline_df['x'].to_numpy())
-    all_y_raw.append(midline_df['drho_dx'].to_numpy())
-    all_y_normalized.append(midline_df['normalized_drho_dx'].to_numpy())
+        all_x.append(midline_df['x'].to_numpy())
+        all_y.append(midline_df['normalized_drho_dx'].to_numpy())
 
     x_common = all_x[0]
 
-all_curves_raw = np.array([
-    np.interp(x_common, all_x[i], all_y_raw[i]) for i in range(len(all_y_raw))
-])
+    all_curves = np.array([
+        np.interp(x_common, all_x[i], all_y[i]) for i in range(len(all_y))
+    ])
 
-all_curves_normalized = np.array([
-    np.interp(x_common, all_x[i], all_y_normalized[i]) for i in range(len(all_y_normalized))
-])
+    for i in range(len(all_curves)):
+        plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 
-# Plot non-normalized curves
-plt.figure()
-for i in range(len(all_curves_raw)):
-    plt.plot(x_common, all_curves_raw[i], label=f'rho0={rho0[i]}')
 
-plt.xlabel(r'x')
-plt.ylabel(r'$\frac{d\rho}{dx}$')
-plt.title(r'$\frac{d\rho}{dx}$ vs x')
-plt.legend()
-plt.grid(True)
-plt.savefig(f"FINAL PLOTS/Midline Density Gradient/CC-densitygrad_y0.png", dpi=300)
-plt.show()
+    distance = all_curves.max(axis=0) - all_curves.min(axis=0)
+    max_distance = distance.max()
 
-# Plot normalized curves
-plt.figure()
-for i in range(len(all_curves_normalized)):
-    plt.plot(x_common, all_curves_normalized[i], label=f'rho0={rho0[i]}')
+    print("Max distance between normalized curves:", max_distance)
+plot_CC()
 
-plt.xlabel(r'x')
+plt.xlabel('x')
 plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
 plt.title(r'Normalized $\frac{d\rho}{dx}$ vs x')
-plt.legend()
 plt.grid(True)
-plt.savefig(f"FINAL PLOTS/Midline Density Gradient/CC-Normalized_densitygrad_y0.png", dpi=300)
 plt.show()
-
-# Max distance between normalized curves
-distance_normalized = all_curves_normalized.max(axis=0) - all_curves_normalized.min(axis=0)
-max_distance_normalized = distance_normalized.max()
-
-print("Max distance between normalized curves:", max_distance_normalized)
-
-# Max distance between non-normalized curves
-distance_raw = all_curves_raw.max(axis=0) - all_curves_raw.min(axis=0)
-max_distance_raw = distance_raw.max()
-
-print("Max distance between non-normalized curves:", max_distance_raw)
