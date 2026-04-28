@@ -106,7 +106,7 @@ axes[1].set_ylabel("y-displacement")
 axes[1].set_xlabel("x")
 axes[1].set_title("y-displacement vs x")
 axes[1].grid(True)
-plt.suptitle('Cross Correlation at T = 254 \u00B0 and p0 = 15.9 Pa')
+plt.suptitle('Test graph: Optical Flow Displacement at alpha = 35, Gaussian blur = 15')
 plt.tight_layout()
 plt.show()
 
