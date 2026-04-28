@@ -22,7 +22,7 @@ from quick_plot import plot_midplane
 # from D02_Streamlinefunction_upper import streamline_upper
 # from D02_Streamline_comparison import compare_streamlines
 from d02_field_corrections import mask_correction
-from D02_OF_densitygrad import pixel_to_coords, build_dataframe
+# from D02_OF_densitygrad import pixel_to_coords, build_dataframe
 
 # Highest to lowest compressibility factor:
 # 7 - 1 - 6 - 2 & 5 - 3 - 4
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     '''CONFIGURE PARAMETERS'''
     alpha = 35
-    blur =  9
+    blur =  11
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
 
