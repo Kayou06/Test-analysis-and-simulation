@@ -172,7 +172,7 @@ ax.set_aspect('equal', adjustable='box')
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
 cbar.set_label(r"[$kg/mm^4$]")
 
-fig.savefig("Density_Gradient_cc.png", dpi=300, bbox_inches="tight")
+fig.savefig("FINAL PLOTS/Density Gradients/CC-densitygrad_BOS_12_11_1.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
 
