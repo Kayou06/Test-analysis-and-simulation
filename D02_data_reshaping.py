@@ -115,14 +115,19 @@ def pixel_to_coords(x_pixels, y_pixels, throat_x, throat_y, SF=25.097):
 
 image_no = 1
 alpha = 35
-blur = 11
+blur = 15
 blur_type = "gaussian"
 
 work_img_final, ref_img_final, temp = get_images(image_no)
 u = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 v = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
+# TODO - CHECK!!!
+SF = 25.097
+
 u_reshaped, v_reshaped = reshape(u, v, ref_img_final)
+u_reshaped = u_reshaped / SF
+v_reshaped = v_reshaped / SF
 throat_x, throat_y = find_throat_position(ref_img_final)
 y_pixels, x_pixels = u_reshaped.shape
 x_coords, y_coords = pixel_to_coords(x_pixels, y_pixels, throat_x, throat_y)
