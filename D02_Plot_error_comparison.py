@@ -1,5 +1,5 @@
 import matplotlib as plt
-from D02 Plot_CrossCorrelation.py import Plot_CC
+from D02_Plot_CrossCorrelation.py import Plot_CC
 curves_CC = Plot_CC()
 fig, ax = plt.subplots(1,1)  
 for j in range(2):
