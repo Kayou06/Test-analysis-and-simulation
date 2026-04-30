@@ -58,12 +58,8 @@ def plot_CC():
 
         midline_df['normalized_drho_dx'] = (midline_df['drho_dx'] / rho0[i-1])
 
-<<<<<<< HEAD
         all_x.append(midline_df['x'].to_numpy())
         all_y.append(midline_df['normalized_drho_dx'].to_numpy())
-=======
-    midline_df['normalized_drho_dx'] = midline_df['drho_dx'] / drho_dx_at_x0
->>>>>>> 11e16b70799096350a37dc92f37863aca4e7df9e
 
     x_common = all_x[0]
 
@@ -78,76 +74,13 @@ def plot_CC():
     distance = all_curves.max(axis=0) - all_curves.min(axis=0)
     max_distance = distance.max()
 
+
     print("Max distance between normalized curves:", max_distance)
+    return all_curves
 plot_CC()
 
 plt.xlabel('x')
 plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
 plt.title(r'Normalized $\frac{d\rho}{dx}$ vs x')
 plt.grid(True)
-<<<<<<< HEAD
 plt.show()
-=======
-plt.savefig(f"FINAL PLOTS/Midline Density Gradient/CC-Normalized_densitygrad_y0.png", dpi=300)
-plt.show()
-
-# Max distance between normalized curves
-distance_normalized = all_curves_normalized.max(axis=0) - all_curves_normalized.min(axis=0)
-max_distance_normalized = distance_normalized.max()
-
-print("Max distance between normalized curves:", max_distance_normalized)
-
-# Max distance between non-normalized curves
-distance_raw = all_curves_raw.max(axis=0) - all_curves_raw.min(axis=0)
-
-
-# Plot non-normalized curves with upper/lower uncertainty bounds
-plt.figure()
-
-# Plot each non-normalized curve with its uncertainty separately
-for i in range(1, 8):
-    curve_idx = i - 1
-
-    y_curve = all_curves_raw[curve_idx]
-
-    # Convert normalized distance to raw scale for this rho0
-    uncertainty = distance_normalized * rho0[curve_idx]
-
-    upper = y_curve + uncertainty
-    lower = y_curve - uncertainty
-
-    plt.figure()
-
-    plt.plot(
-        x_common,
-        y_curve,
-        label=f'rho0={rho0[curve_idx]}'
-    )
-
-    plt.plot(
-        x_common,
-        upper,
-        '--',
-        label='Upper bound'
-    )
-
-    plt.plot(
-        x_common,
-        lower,
-        '--',
-        label='Lower bound'
-    )
-
-    plt.xlabel(r'x')
-    plt.ylabel(r'$\frac{d\rho}{dx}$')
-    plt.title(rf'$\frac{{d\rho}}{{dx}}$ with uncertainty (rho0={rho0[curve_idx]:.2f})')
-    plt.legend()
-    plt.grid(True)
-
-    plt.savefig(
-        f"FINAL PLOTS/Midline Density Gradient/CC-densitygrad_uncertainty_y0_case_{i}.png",
-        dpi=300
-    )
-
-    plt.show()
->>>>>>> 11e16b70799096350a37dc92f37863aca4e7df9e
