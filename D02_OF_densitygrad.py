@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Compressibility import compressibility_factor_and_density
+from d02_Compressibility import compressibility_factor_and_density
 
 Z, rho0 = compressibility_factor_and_density()
 
