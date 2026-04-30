@@ -7,6 +7,7 @@ import matplotlib as mpl
 import cv2 as cv
 from scipy.optimize import curve_fit
 
+rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
 
 def tanh_func(x, a, b, c, d):
     return a * np.tanh(b * (x + c)) + d
@@ -154,7 +155,7 @@ plt.close(fig)
 # Density Gradient at y0
 # plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 # plt.scatter(new_x, line, s=10, label=f'rho0=Add')
-plt.plot(new_x, line, label=f'rho0=val')
+plt.plot(new_x, (np.array(line)/rho0[0]), label=fr'$\rho_0$={round(rho0[0], 5)}')
 plt.xlabel(r'x')
 plt.ylabel(r'$\frac{d\rho}{dx}$')
 plt.title(r'$\frac{d\rho}{dx}$ vs x')
