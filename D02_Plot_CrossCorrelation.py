@@ -12,7 +12,7 @@ def plot_CC():
         W = 0.020
         K = 4.5*10**-4
         n0 = K*rho+1
-        return del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)
+        return del_x * n0 * (ZD + ZA - f) / (C * W * K * f * ZD)/1000
 
     all_x = []
     all_y = []
