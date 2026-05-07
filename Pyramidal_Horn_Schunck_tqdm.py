@@ -139,7 +139,7 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussi
                 # convergence error (at most 10000 iterations)
                 # print('diff:',diff)
                 tqdm.write(f"diff: {diff}")
-                raise TypeError("Pyramidal level ",i ," failed to converge")
+                raise TypeError(f"Pyramidal level {i} failed to converge")
 
         pbar.close()
 

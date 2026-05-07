@@ -23,8 +23,8 @@ def cross_correction(u, v, picture_no=1, SF=25.097):
                 .agg(mean_y_corr = ('y-displacement','mean'))
     )
 
-    print(f"Mean x: {avg_x_corr}")
-    print(f"Mean y: {avg_y_corr}")
+    print(f"Mean x: {avg_x_corr.iloc[0,0]} mm = {avg_x_corr.iloc[0,0] * SF} px")
+    print(f"Mean y: {avg_y_corr.iloc[0,0]} mm = {avg_y_corr.iloc[0,0] * SF} px")
 
     # use the correction data to correct the BOS data frame
     u_corr = u - avg_x_corr.iloc[0,0] * SF

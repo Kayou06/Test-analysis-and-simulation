@@ -122,7 +122,7 @@ work_img_final, ref_img_final, temp = get_images(image_no)
 u = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 v = np.load(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
-# TODO - CHECK!!!
+# scaling factor [px/mm]
 SF = 25.097
 
 u_reshaped, v_reshaped = reshape(u, v, ref_img_final)
