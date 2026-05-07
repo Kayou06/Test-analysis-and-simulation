@@ -25,7 +25,8 @@ data = data.sort_values(["x", "y"]).reset_index(drop=True)
 x_unique = np.sort(data["x"].unique())
 
 # Fractions of local nozzle half-height
-fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
+# fractions = [0.00, 0.25, 0.50, 0.75, 1.00]
+fractions = [0.00]
 
 
 # Store results
