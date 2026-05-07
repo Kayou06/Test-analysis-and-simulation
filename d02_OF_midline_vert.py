@@ -1,13 +1,12 @@
 import numpy as np
 
 def find_midline_y(u, v):
-    v_sum = np.sum(v, axis=1)
+    v_bounded = v[212:412 + 1, :]
+    v_sum = np.sum(v_bounded, axis=1)
 
     vertical_score = np.abs(v_sum)
 
-    print(f"Vertical score shape: {vertical_score.shape}")
-
-    midline_y_index = int(np.argmax(vertical_score))
+    midline_y_index = int(np.argmax(vertical_score)) + 212
 
     return midline_y_index
 
