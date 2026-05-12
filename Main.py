@@ -36,67 +36,52 @@ if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
 
     '''CONFIGURE PARAMETERS'''
-    # alpha = 5
-    # blur =  1
-    a = [5, 10, 15, 20, 25, 30]
-    b = [1, 3, 5, 7]
+    alpha = 35
+    blur =  11
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
     # # PRE-PROCESSING
     ref_img_final, work_img_final, temp = image_preprocessing(image_no)
 
-    for alpha in a:
-        for blur in b:
+    '''MAIN RUN'''
 
-            '''MAIN RUN'''
+    # # MAIN RUN
+    # # The number of levels is determined based on the maximum displacement expected
+    # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
+    # # The blur is based on the results from my Cross-Correlation pre-processubg
+    # # Alpha is based on some trial and error
 
-            # # MAIN RUN
-            # # The number of levels is determined based on the maximum displacement expected
-            # # I keep 6 levels based on literature: https://doi.org/10.1007/s00348-022-03553-z 
-            # # The blur is based on the results from my Cross-Correlation pre-processubg 
-            # # Alpha is based on some trial and error
+    '''Either compute a NEW vector field or load an EXISTING vector field'''
 
-            '''Either compute a NEW vector field or load an EXISTING vector field'''
+    file1 = Path(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file2 = Path(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file3 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    file4 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
 
-            file1 = Path(f"VF BOS_12_11_{image_no} ({temp})/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-            file2 = Path(f"VF BOS_12_11_{image_no} ({temp})/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-            file3 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/u_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
-            file4 = Path(f"VF BOS_12_11_{image_no} ({temp}) corrected/v_HS_alpha{alpha}_blur{blur}_{blur_type}.npy")
+    if file1.exists() and file2.exists() and file3.exists() and file4.exists():
+         # Load already existing vector fields
+        u = np.load(file1)
+        v = np.load(file2)
+        u_corr = np.load(file3)
+        v_corr = np.load(file4)
+        print("Files loaded successfully.")
+    else:
+        # Compute new uncorrected AND cross-corrected vector fields
+        print(f"Trying to compute new vector fields for image {image_no} with alpha {alpha}, blur {blur}, and blur type {blur_type}.")
+        u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
+        u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
+        # Save vector fields
+        np.save(file1, u)
+        np.save(file2, v)
+        np.save(file3, u_corr)
+        np.save(file4, v_corr)
+        print("Files computed, corrected and saved successfully.")
 
-            if file1.exists() and file2.exists() and file3.exists() and file4.exists():
-                # Load already existing vector fields
-                u = np.load(file1)
-                v = np.load(file2)
-                u_corr = np.load(file3)
-                v_corr = np.load(file4)
-                print("Files loaded successfully.")
-            elif file1.exists() and file2.exists():
-                # Load already existing uncorrected vector fields
-                u = np.load(file1)
-                v = np.load(file2)
-                print("Uncorrected files loaded successfully.")
-                u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
-                # Save cross-corrected vector fields
-                np.save(file3, u_corr)
-                np.save(file4, v_corr)
-                print("Cross-corrected files computed and saved successfully.")
-            else:
-                # Compute new uncorrected AND cross-corrected vector fields
-                print(f"Trying to compute new vector fields for image {image_no} with alpha {alpha}, blur {blur}, and blur type {blur_type}.")
-                u, v = HS_pyramidal(ref_img_final, work_img_final, alpha=alpha, levels=6, delta=1e-2, blr=blur, blur_type=blur_type)
-                u_corr, v_corr = cross_correction(u, v, picture_no=image_no)
-                # Save vector fields
-                np.save(file1, u)
-                np.save(file2, v)
-                np.save(file3, u_corr)
-                np.save(file4, v_corr)
-                print("Files computed, corrected and saved successfully.")
-
-            # Apply post-processing steps to cross-corrected vector field
-            x_coords, y_coords, u_final, v_final = data_postprocessing(image_no, u_corr, v_corr)
-            df = build_dataframe(x_coords, y_coords, u_final, v_final)
-            df.to_csv(f'OF_dataframes/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
-            print("Succesfully saved final dataframe.")
+    # Apply post-processing steps to cross-corrected vector field
+    x_coords, y_coords, u_final, v_final = data_postprocessing(image_no, u_corr, v_corr)
+    df = build_dataframe(x_coords, y_coords, u_final, v_final)
+    df.to_csv(f'OF_dataframes/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
+    print("Succesfully saved final dataframe.")
 
     '''VISUALIZING RESULTS'''
 
