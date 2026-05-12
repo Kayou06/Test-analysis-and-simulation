@@ -105,7 +105,7 @@ for f in fractions:
         "x": x_plot,
         "ux": ux_plot})
     
-    midline_df.to_csv(f"Midline_displacements (pixel method)/Image {image_no}.csv", index=False)
+    midline_df.to_csv(f"Midline_displacements (pixel method)/Image_{image_no}.csv", index=False)
 
     label = f"y / y_max(x) = {f:.2f}"
 
