@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-image_no = 5
+image_no = 6
 temp = 252
 
 alpha = 35
@@ -105,7 +105,7 @@ for f in fractions:
         "x": x_plot,
         "ux": ux_plot})
     
-    midline_df.to_csv(f"Midline_displacements/Image {image_no}.csv", index=False)
+    midline_df.to_csv(f"Midline_displacements (pixel method)/Image {image_no}.csv", index=False)
 
     label = f"y / y_max(x) = {f:.2f}"
 
