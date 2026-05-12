@@ -41,7 +41,7 @@ if __name__ == "__main__":
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
     # midpoint_finder is either 0 (empty pixel method) or 1 (circle method)
-    midpoint_finder = 1
+    midpoint_finder = 0
 
     # # PRE-PROCESSING
     ref_img_final, work_img_final, temp = image_preprocessing(image_no)
