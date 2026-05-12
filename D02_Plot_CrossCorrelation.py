@@ -17,11 +17,14 @@ def plot_CC():
     all_x = []
     all_y = []
     all_ex = []
-    all_ey = []
+    all_x_OF = []
+    all_y_OF = []
+
 
     for i in range(1, 8):
         df_BOS = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
         df_corr = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv', delimiter=';')
+        of_df= pd.read_csv(f'D02_OF_CURVES/Image_{i}.csv', delimiter = ',')
         x = df_BOS['x']
         y = df_BOS['y']
         u = df_BOS['x-displacement']
@@ -62,15 +65,21 @@ def plot_CC():
         
 
         drho_dx    = calc_drho_dx(u_mid,  rho0[i - 1]) / rho0[i - 1]
+        drho_dx_OF    = calc_drho_dx(of_df['ux'],  rho0[i - 1]) / rho0[i - 1]
         drho_dx_ex = calc_drho_dx(ex_mid, rho0[i - 1]) / rho0[i - 1]
 
         all_x.append(midline_df['x'].to_numpy())
+        all_x_OF.append(of_df['x'].to_numpy())
         all_y.append(drho_dx)
+        all_y_OF.append(drho_dx_OF)
         all_ex.append(drho_dx_ex)
 
 
     x_common = all_x[0]
-
+    x_common_OF = all_x_OF[0]
+    all_curves_OF = np.array([
+        np.interp(x_common, all_x_OF[i], all_y_OF[i]) for i in range(len(all_y))
+    ])
     all_curves = np.array([
         np.interp(x_common, all_x[i], all_y[i]) for i in range(len(all_y))
     ])
@@ -80,9 +89,11 @@ def plot_CC():
 
     for i, ax in enumerate(axes[:7]):       # first 7 panels
         curve = all_curves[i]
+        curve_OF = all_curves_OF[i]
         err   = all_ex_interp[i]
 
         ax.plot(x_common, curve, label=f'rho0={rho0[i]:.2f}')
+        ax.plot(x_common_OF, curve_OF, label=f'rho0={rho0[i]:.2f}')
         ax.fill_between(x_common, curve - err, curve + err,
                         alpha=0.3, label='Uncertainty')
         ax.set_xlabel('x')
