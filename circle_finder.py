@@ -7,23 +7,23 @@ from Filters import Blur_subtraction
 def circles_finder(img,blur_lvl,xmin,xmax,r_t,r_w):
 
     # save the image in another image, that will be use to write on
+    img = np.clip(img.astype(np.float32) * 10, 0, 255).astype(np.uint8)
     img_for_circles = img
-    # img_blur = img_for_circles
+    img_blur = img_for_circles
     # # THESE ARE A LIST OF FILTERS, good luck finding the right one
     # img_blur = cv.bilateralFilter(img_for_circles, blur_lvl, 200, 200) # Bilateral, is non linear and good for edges
     # img_blur = cv.filter2D(img_for_circles, -1, np.ones((blur_lvl, blur_lvl), np.float32) / (blur_lvl ** 2)) # this is a simple box filter (it uses a convolution)
     # img_blur = cv.medianBlur(img_for_circles, blur_lvl) # this is a median filter, it is good for removing noise
-    img_blur = cv.GaussianBlur(img_for_circles, (blur_lvl, blur_lvl), 0) # this is a gaussian filter, it is good for removing noise
-
+    img_blur = cv.GaussianBlur(img_blur, (blur_lvl, blur_lvl), 0) # this is a gaussian filter, it is good for removing noise
     # img_blur = bandpass_filter(img_for_circles, 19, 300) # this is a bandpass filter, it is good for edge highlighting
-    # img_blur = Blur_subtraction(img_for_circles, blur_lvl) # this is a blur subtraction filter, it is good for edge highlighting
+    img_blur = Blur_subtraction(img_blur, blur_lvl) # this is a blur subtraction filter, it is good for edge highlighting
 
-    # plt.subplot(1,2,1)
-    # plt.imshow(img_for_circles,cmap='gray')
-    # plt.subplot(1,2,2)
-    # plt.imshow(img_blur,cmap='gray')
-    # plt.title('blurred image')
-    # plt.show()
+    plt.subplot(1,2,1)
+    plt.imshow(img_for_circles,cmap='gray')
+    plt.subplot(1,2,2)
+    plt.imshow(img_blur,cmap='gray')
+    plt.title('blurred image')
+    plt.show()
 
     # find edges with canny
     # cannyEdge_visual(img_blur) # just to have a look and pick the limits
@@ -87,3 +87,17 @@ def circles_finder(img,blur_lvl,xmin,xmax,r_t,r_w):
 
         return selected_circles
 
+
+if "__main__" == __name__:
+    img = cv.imread("Raw_Pictures_Wavelet/BOS_12_11_1.tif", cv.IMREAD_GRAYSCALE)
+
+    circles = circles_finder(
+        img=img,
+        blur_lvl=9,
+        xmin=700,
+        xmax=1050,
+        r_t=100,
+        r_w=100
+    )
+
+    print(circles)
