@@ -6,6 +6,7 @@ from Masking import shape_isolation
 from Pyramidal_Horn_Schunck_tqdm import reshape
 import pandas as pd
 from d02_field_corrections import mask_correction
+from d02_circle_midline_finder import find_midline
 
 # This file contains functions which perform post-processing for OF data:
 # finding the throat position, converting pixel coordinates to reas-world coordinates, and building a dataframe with the results
@@ -91,7 +92,9 @@ def build_dataframe(x, y, ux, uy):
     return df
 
 
-def data_postprocessing(image_no, u, v):
+def data_postprocessing(image_no, u, v, type=0):
+    path = f"Raw_Pictures_Wavelet/BOS_12_11_{image_no}.tif"
+
     work_img_final, ref_img_final, temp = get_images(image_no)
 
     # scaling factor [px/mm]
@@ -103,7 +106,11 @@ def data_postprocessing(image_no, u, v):
     u_reshaped = u_reshaped / SF
     v_reshaped = v_reshaped / SF
 
-    throat_x, throat_y = find_throat_position(ref_img_final)
+    if type ==0:
+        throat_x, throat_y = find_throat_position(ref_img_final)
+    elif type == 1:
+        throat_x, throat_y = find_midline(path)
+
     y_pixels, x_pixels = u_reshaped.shape
     x_coords, y_coords = pixel_to_coords(x_pixels, y_pixels, throat_x, throat_y)
 

@@ -40,6 +40,9 @@ if __name__ == "__main__":
     blur =  11
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
+    # midpoint_finder is either 0 (empty pixel method) or 1 (circle method)
+    midpoint_finder = 1
+
     # # PRE-PROCESSING
     ref_img_final, work_img_final, temp = image_preprocessing(image_no)
 
@@ -78,9 +81,12 @@ if __name__ == "__main__":
         print("Files computed, corrected and saved successfully.")
 
     # Apply post-processing steps to cross-corrected vector field
-    x_coords, y_coords, u_final, v_final = data_postprocessing(image_no, u_corr, v_corr)
+    x_coords, y_coords, u_final, v_final = data_postprocessing(image_no, u_corr, v_corr, type=midpoint_finder)
     df = build_dataframe(x_coords, y_coords, u_final, v_final)
-    df.to_csv(f'OF_dataframes/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
+    if midpoint_finder == 0:
+        df.to_csv(f'OF_dataframes (pixel method)/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
+    elif midpoint_finder == 1:
+        df.to_csv(f'OF_dataframes (circle method)/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
     print("Succesfully saved final dataframe.")
 
     '''VISUALIZING RESULTS'''
