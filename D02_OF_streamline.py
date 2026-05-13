@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-image_no = 6
+image_no = 7
 temp = 252
 
 alpha = 35

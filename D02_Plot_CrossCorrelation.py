@@ -24,7 +24,7 @@ def plot_CC():
     for i in range(1, 8):
         df_BOS = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/BOS_12_11_{i}0001.csv', delimiter=';')
         df_corr = pd.read_csv(f'Raw_Pictures_Wavelet/BOS_12_11_{i}/cross_correction0001.csv', delimiter=';')
-        of_df= pd.read_csv(f'D02_OF_CURVES/Image_{i}.csv', delimiter = ',')
+        of_df= pd.read_csv(f'Midline_displacements (pixel method)/Image_{i}.csv', delimiter = ',')
         x = df_BOS['x']
         y = df_BOS['y']
         u = df_BOS['x-displacement']
@@ -93,7 +93,7 @@ def plot_CC():
         err   = all_ex_interp[i]
 
         ax.plot(x_common, curve, label=f'rho0={rho0[i]:.2f}')
-        ax.plot(x_common_OF, curve_OF, label=f'rho0={rho0[i]:.2f}')
+        ax.plot(x_common, curve_OF, label=f'OF rho0={rho0[i]:.2f}')
         ax.fill_between(x_common, curve - err, curve + err,
                         alpha=0.3, label='Uncertainty')
         ax.set_xlabel('x')
