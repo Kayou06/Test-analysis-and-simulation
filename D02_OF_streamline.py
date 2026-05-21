@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-image_no = 4
+image_no = 7
 temp = 252
 
 alpha = 35
@@ -10,7 +10,7 @@ blur = 11
 blur_type = "gaussian"
 
 # Load data
-df_BOS = pd.read_csv(f'OF_dataframes/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', delimiter=',')
+df_BOS = pd.read_csv(f'OF_dataframes (pixel method)/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', delimiter=',')
 
 # Extract raw BOS data
 x = df_BOS['x'].to_numpy()
@@ -105,7 +105,7 @@ for f in fractions:
         "x": x_plot,
         "ux": ux_plot})
     
-    midline_df.to_csv(f"Midline_displacements/Image {image_no}.csv", index=False)
+    midline_df.to_csv(f"Midline_displacements (pixel method)/Image_{image_no}.csv", index=False)
 
     label = f"y / y_max(x) = {f:.2f}"
 

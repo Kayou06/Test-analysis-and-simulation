@@ -8,7 +8,13 @@ def blur_func(data_raw):
     return data_smooth
 
 
-def plot_OF(alpha, blur, blur_type):
+def plot_OF(alpha, blur, blur_type, type=0):
+    # midpoint_finder is either 0 (empty pixel method) or 1 (circle method)
+    if type == 1:
+        method = "circle method"
+    else:
+        method = "pixel method"
+
     # rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
     rho0 = np.ones(7)
 
@@ -34,7 +40,7 @@ def plot_OF(alpha, blur, blur_type):
         else:
             temp = 252
 
-        file = f"OF_dataframes/BOS_12_11_{i} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
+        file = f"OF_dataframes ({method})/BOS_12_11_{i} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
 
         df_OF = pd.read_csv(file, delimiter=",")
 
