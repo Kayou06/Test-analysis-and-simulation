@@ -125,7 +125,7 @@ sc = ax.scatter(x, y, c=density, s=10)
 
 ax.set_xlabel(r"$x$ [$mm$]")
 ax.set_ylabel(r"$y$ [$mm$]")
-ax.set_title("Density at " + fr'$\rho_0$={round(rho0[6], 5)}')
+ax.set_title("Density")
 ax.set_aspect('equal', adjustable='box')
 
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
@@ -137,11 +137,11 @@ plt.close(fig)
 
 # Density Gradient
 fig, ax = plt.subplots(figsize=(16, 4))
-sc = ax.scatter(x, y, c=density_prime, s=10)
+sc = ax.scatter(x, y, c=(density_prime), s=10)
 
 ax.set_xlabel(r"$x$ [$mm$]")
 ax.set_ylabel(r"$y$ [$mm$]")
-ax.set_title("Density Gradient at " + fr'$\rho_0$={round(rho0[6], 5)}')
+ax.set_title("Density Gradient")
 ax.set_aspect('equal', adjustable='box')
 
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
@@ -154,10 +154,10 @@ plt.close(fig)
 # Density Gradient at y0
 # plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 # plt.scatter(new_x, line, s=10, label=f'rho0=Add')
-plt.plot(new_x, (np.array(line)/rho0[6]), label=fr'$\rho_0$={round(rho0[6], 5)}')
+plt.plot(new_x, (np.array(line)/rho0[6]), label=r"Normalised $\frac{d\rho}{dx}$ [$kg/m^4$]")
 plt.xlabel(r'x')
 plt.ylabel(r'$\frac{d\rho}{dx}$')
-plt.title(r'$\frac{d\rho}{dx}$ vs x at $y=0$')
+plt.title(r'Normalised $\frac{d\rho}{dx}$ vs x at $y=0$')
 plt.legend()
 plt.grid(True)
 plt.savefig("FINAL PLOTS/Midline Density Gradient/CFD-densitygrad_y0_BOS_12_11_7.png", dpi=300)
