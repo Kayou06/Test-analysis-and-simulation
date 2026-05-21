@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from d02_Compressibility import compressibility_factor_and_density
+from d02_field_corrections import mask_correction_densitygrad
+from D02_data_postprocessing import get_images
 
 Z, rho0 = compressibility_factor_and_density()
 
@@ -135,10 +137,35 @@ def extract_midline_displacement(bos_file):
 
 
 # -------------------------------------------------
-# Plot normalized drho/dx for all 7 files
+# Plot normalized drho/dx for a single image
 # -------------------------------------------------
-plt.figure(figsize=(10, 6))
 
+def plot_normalized_drodx_OF(bos_file):
+    plt.figure(figsize=(10, 6))
+
+    midline_df = extract_midline_displacement(bos_file)
+
+    drho_dx = calc_drho_d(midline_df['x_displacement'], rho)
+
+    closest_idx = np.abs(midline_df['x']).argmin()
+    drho_dx_at_x0 = drho_dx.iloc[closest_idx]
+
+    normalized_drho_dx = -1*drho_dx / (rho*10**3)
+
+    plt.plot(
+        midline_df['x'],
+        normalized_drho_dx,
+        label=rf'$\rho_0 = {rho:.4f}\ \mathrm{{kg/m^3}}$'
+    )
+
+    plt.xlabel('x')
+    plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
+    plt.title(r'$\frac{d\rho}{dx}$ vs x at y = 0')
+
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+ 
 image_no = 1
 temp = 220
 alpha = 35
@@ -146,7 +173,6 @@ blur = 11
 blur_type = "gaussian"
 rho = rho0[image_no - 1]
 midpoint_finder = 0
-
 # midpoint_finder is either 0 (empty pixel method) or 1 (circle method)
 if midpoint_finder == 1:
     method = "circle method"
@@ -155,46 +181,38 @@ else:
 
 bos_file = f"OF_dataframes ({method})/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
 
-midline_df = extract_midline_displacement(bos_file)
+plot_normalized_drodx_OF(bos_file=bos_file)
 
-drho_dx = calc_drho_d(midline_df['x_displacement'], rho)
 
-closest_idx = np.abs(midline_df['x']).argmin()
-drho_dx_at_x0 = drho_dx.iloc[closest_idx]
+# -------------------------------------------------
+# Plot full density gradient field for a single image
+# -------------------------------------------------
 
-normalized_drho_dx = -1*drho_dx / (rho*10**3)
-
-plt.plot(
-    midline_df['x'],
-    normalized_drho_dx,
-    label=rf'$\rho_0 = {rho:.4f}\ \mathrm{{kg/m^3}}$'
-)
-
-plt.xlabel('x')
-plt.ylabel(r'Normalized $\frac{d\rho}{dx}$')
-plt.title(r'$\frac{d\rho}{dx}$ vs x at y = 0')
-
-plt.grid(True)
-plt.legend()
-plt.show()
- 
-
-'''
-# Full Density Gradient Plot
-image_no = 1
-r = rho0[image_no - 1]
-alpha = 35
-blur = 11
-blur_type = "gaussian"
-temp = 220
+work_image_final, ref_image_final, temp = get_images(image_no)
 
 x, y, density_gradient = calc_density_gradient_all_points(
-    image_no=image_no, temp=temp, alpha=alpha, blur=blur, blur_type=blur_type, rho=r)
+    image_no=image_no, temp=temp, alpha=alpha, blur=blur, blur_type=blur_type, rho=rho)
 
+density_gradient = mask_correction_densitygrad(density_gradient, ref_image_final)
 
+# Keep only upper half
+mask_upper = y >= 0
+
+x_plot = x[mask_upper]
+y_plot = y[mask_upper]
+density_plot = density_gradient[mask_upper]
 
 fig, ax = plt.subplots(figsize=(16, 4))
-sc = ax.scatter(x, y, c=density_gradient, s=10)
+
+density_gradient_masked = np.ma.masked_where(
+    density_plot ==0.,
+    density_plot
+)
+
+cmap = plt.cm.viridis.copy()
+cmap.set_bad(color="white")
+
+sc = ax.scatter(x_plot, y_plot, c=density_gradient_masked, s=10, cmap=cmap)
 
 ax.set_xlabel(r"$x$ [$mm$]")
 ax.set_ylabel(r"$y$ [$mm$]")
@@ -208,4 +226,3 @@ cbar.set_label(r"[$kg/m^3/mm$]")
 plt.show()
 plt.close(fig)
 
-'''

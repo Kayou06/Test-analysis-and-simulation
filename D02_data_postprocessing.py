@@ -106,6 +106,7 @@ def data_postprocessing(image_no, u, v, type=0):
     u_reshaped = u_reshaped / SF
     v_reshaped = v_reshaped / SF
 
+    # type 0 corresponds to empty pixel method, type 1 corresponds to circle method.
     if type ==0:
         throat_x, throat_y = find_throat_position(ref_img_final)
     elif type == 1:
