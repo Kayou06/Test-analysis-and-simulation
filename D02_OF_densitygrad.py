@@ -71,7 +71,7 @@ def calc_density_gradient_all_points(image_no, temp, alpha, blur, blur_type, rho
         method = "pixel method"
 
     file = f"OF_dataframes ({method})/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
-
+    #file = f"Midline_displacements (pixel method)\Image_{i}.csv"
     df_OF = pd.read_csv(file, delimiter=",")
 
     x = df_OF['x'].to_numpy()

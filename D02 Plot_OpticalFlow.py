@@ -31,9 +31,9 @@ def plot_OF(alpha, blur, blur_type, type=0):
     all_x = []
     all_y = []
 
-    # for i in range(1, 8):
-    i = 1
-    while i == 1:
+    for i in range(1, 8):
+    #i = 1
+    #while i == 1:
 
         if i == 1 or i == 2:
             temp = 220
@@ -41,8 +41,7 @@ def plot_OF(alpha, blur, blur_type, type=0):
             temp = 252
 
         file = f"OF_dataframes ({method})/BOS_12_11_{i} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
-
-        df_OF = pd.read_csv(file, delimiter=",")
+        #file = f"Midline_displacements (pixel method)\Image_{i}.csv"
 
         # get coordinates and displacements, coverting from mm to m
         x = df_OF['x'] * 10**(-3)
