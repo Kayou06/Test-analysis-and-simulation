@@ -19,12 +19,11 @@ def compressibility_factor_and_density():
         rho0_values.append(rho)
         
 
-    return Z_values, rho0_values, P_pascal
+    return Z_values, rho0_values
 
 
-Z, rho0, P = compressibility_factor_and_density()
+Z, rho0 = compressibility_factor_and_density()
 
 print("Z:", Z)
 print("rho0:", rho0)
-print("P:", P)
 
