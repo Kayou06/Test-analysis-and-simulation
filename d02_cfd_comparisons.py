@@ -100,11 +100,10 @@ def get_cfd_values_shifted(path, scale=1000, n_bins=500):
 
 u = np.load("u_HS.npy")
 v = np.load("v_HS.npy") # V is upwards, U is rightwards
-mask = cv.imread("Correlable_pics/BOS_12_11_ref_masked.tif", cv.IMREAD_GRAYSCALE)
 
 # x, y, density, density_prime = get_cfd_values("Wavelet_noise_experiments/220/BOS_12_11_1/flow_MUSCL.vtu")
 
-x, y, density, density_prime = get_cfd_values_shifted("Wavelet_noise_experiments/220/BOS_12_11_1/flow_MUSCL.vtu")
+x, y, density, density_prime = get_cfd_values_shifted("Wavelet_noise_experiments/252/BOS_12_11_7/flow_MUSCL.vtu")
 
 new_x, line = get_straight_values(x, y, density_prime)
 
@@ -132,13 +131,13 @@ ax.set_aspect('equal', adjustable='box')
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
 cbar.set_label(r"[$kg/m^3$]")
 
-fig.savefig("Density.png", dpi=300, bbox_inches="tight")
+fig.savefig("FINAL PLOTS/Density Gradients/CFD-density_BOS_12_11_7.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
 
 # Density Gradient
 fig, ax = plt.subplots(figsize=(16, 4))
-sc = ax.scatter(x, y, c=density_prime, s=10)
+sc = ax.scatter(x, y, c=(density_prime), s=10)
 
 ax.set_xlabel(r"$x$ [$mm$]")
 ax.set_ylabel(r"$y$ [$mm$]")
@@ -148,18 +147,18 @@ ax.set_aspect('equal', adjustable='box')
 cbar = fig.colorbar(sc, ax=ax, orientation='horizontal', pad=0.25, fraction=0.1, aspect=60)
 cbar.set_label(r"[$kg/m^4$]")
 
-fig.savefig("FINAL PLOTS/Density Gradients/CFD-densitygrad_config1.png", dpi=300, bbox_inches="tight")
+fig.savefig("FINAL PLOTS/Density Gradients/CFD-densitygrad_BOS_12_11_7.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
 
 # Density Gradient at y0
 # plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 # plt.scatter(new_x, line, s=10, label=f'rho0=Add')
-plt.plot(new_x, (np.array(line)/rho0[0]), label=fr'$\rho_0$={round(rho0[0], 5)}')
+plt.plot(new_x, (np.array(line)/rho0[6]), label=r"Normalised $\frac{d\rho}{dx}$ [$kg/m^4$]")
 plt.xlabel(r'x')
 plt.ylabel(r'$\frac{d\rho}{dx}$')
-plt.title(r'$\frac{d\rho}{dx}$ vs x')
+plt.title(r'Normalised $\frac{d\rho}{dx}$ vs x at $y=0$')
 plt.legend()
 plt.grid(True)
-plt.savefig("FINAL PLOTS/Midline Density Gradient/CFD-densitygrad_y0.png", dpi=300)
+plt.savefig("FINAL PLOTS/Midline Density Gradient/CFD-densitygrad_y0_BOS_12_11_7.png", dpi=300)
 plt.show()

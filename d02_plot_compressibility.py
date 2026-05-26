@@ -9,7 +9,7 @@ fig, ax = plt.subplots()
 # Use a qualitative colour map
 cmap = plt.get_cmap("tab10")
 
-for i, (xi, yi, label) in enumerate(zip(rho0, Z, labels)):
+for i, (xi, yi, label) in enumerate(zip(Z, rho0, labels)):
     colour = cmap(i)
 
     # Thin vertical line
@@ -29,7 +29,7 @@ for i, (xi, yi, label) in enumerate(zip(rho0, Z, labels)):
         s=35,
         color=colour,
         zorder=3,
-        label=f"Point {label}"
+        label=f"Image {label}"
     )
 
     # Point label
@@ -41,9 +41,9 @@ for i, (xi, yi, label) in enumerate(zip(rho0, Z, labels)):
         fontsize=8
     )
 
-ax.set_xlabel(r"Density ($\rho_0$) [kg/m^3]")
-ax.set_ylabel(r"Compressibility Factor ($Z$)")
-ax.set_title("Compressibility Factor vs Density for Different Configurations")
+ax.set_xlabel(r"Compressibility Factor ($Z$)")
+ax.set_ylabel(r"Density ($\rho_0$) [kg/m$^3$]")
+ax.set_title("Density vs Compressibility Factor for Different Configurations")
 ax.grid(True, alpha=0.3)
 
 # Legend
@@ -53,5 +53,5 @@ ax.legend(
     fontsize=8
 )
 
-fig.savefig("compressibility_factor_image.png", dpi=300, bbox_inches="tight")
+fig.savefig("compressibility_factor_image2.png", dpi=300, bbox_inches="tight")
 plt.show()

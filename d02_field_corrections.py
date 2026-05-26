@@ -25,3 +25,14 @@ def mask_correction(u, v, mask):
 
     return u, v
 
+def mask_correction_densitygrad(density_gradient, mask):
+    scale = 10
+    mask_flat = mask.flatten()
+
+    # Copy to avoid modifying original
+    density_gradient_corrected = density_gradient.copy()
+
+    # Set values outside mask to zero
+    density_gradient_corrected[mask_flat == 255] = 0
+
+    return density_gradient_corrected

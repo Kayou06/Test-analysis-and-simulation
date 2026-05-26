@@ -1,8 +1,22 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-def plot_OF(alpha, blur, blur_type):
-    rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
+from scipy.signal import savgol_filter
+
+def blur_func(data_raw):
+    data_smooth = savgol_filter(data_raw, window_length=71, polyorder=3)
+    return data_smooth
+
+
+def plot_OF(alpha, blur, blur_type, type=0):
+    # midpoint_finder is either 0 (empty pixel method) or 1 (circle method)
+    if type == 1:
+        method = "circle method"
+    else:
+        method = "pixel method"
+
+    # rho0 = [40.27772187279685, 75.04027767585774, 139.0060691158923, 209.16092353098253, 91.60892909471781, 59.861281984102675, 41.428026313530424]
+    rho0 = np.ones(7)
 
     def calc_drho_dx(del_x, rho):
         C = 5.3
@@ -26,7 +40,7 @@ def plot_OF(alpha, blur, blur_type):
         else:
             temp = 252
 
-        file = f"OF_dataframes/BOS_12_11_{i} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
+        file = f"OF_dataframes ({method})/BOS_12_11_{i} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv"
 
         df_OF = pd.read_csv(file, delimiter=",")
 
@@ -55,7 +69,9 @@ def plot_OF(alpha, blur, blur_type):
         })
 
         drho_dx = calc_drho_dx(midline_df['x_displacement'], rho0[i-1])
-        midline_df['drho_dx'] = drho_dx
+        drho_dx = blur_func(drho_dx)
+
+        midline_df['drho_dx'] = drho_dx 
 
         closest_idx = (midline_df['x'] - 0).abs().argmin()
         drho_dx_at_x0 = midline_df.loc[closest_idx, 'drho_dx']

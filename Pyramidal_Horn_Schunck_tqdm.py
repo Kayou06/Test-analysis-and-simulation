@@ -86,7 +86,7 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussi
 
         
         iter_counter = 0
-        n = 20000
+        n = 40000
         # pbar = tqdm(desc=f'Level {i+1}/{levels}', total=n)
         pbar = tqdm(desc=f'Level {i+1}/{levels}', unit='iter')
 
@@ -135,11 +135,11 @@ def HS_pyramidal(Image1,Image2, alpha, levels,delta=0.1,blr=5, blur_type="gaussi
                 tqdm.write(f"diff: {diff}")
                 break
 
-            elif iter_counter > 20000:            
+            elif iter_counter > 40000:            
                 # convergence error (at most 10000 iterations)
                 # print('diff:',diff)
                 tqdm.write(f"diff: {diff}")
-                raise TypeError("Pyramidal level ",i ," failed to converge")
+                raise TypeError(f"Pyramidal level {i} failed to converge")
 
         pbar.close()
 
