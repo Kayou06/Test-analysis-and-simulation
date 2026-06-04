@@ -36,7 +36,7 @@ if __name__ == "__main__":
     image_no = int(input("Enter the image number (1-7): "))
 
     '''CONFIGURE PARAMETERS'''
-    a = [5, 10, 15, 20, 25, 30, 35, 40]
+    a = [35]
     b = [11]
     blur_type = "gaussian" #blur type is either "gaussian" or "median"
 
@@ -92,26 +92,25 @@ if __name__ == "__main__":
                 df.to_csv(f'OF_dataframes (circle method)/BOS_12_11_{image_no} ({temp}C) df with alpha {alpha}, {blur_type} blur {blur}.csv', index=False)
             print("Succesfully saved final dataframe.")
 
-    # '''VISUALIZING RESULTS'''
+            # '''VISUALIZING RESULTS'''
 
-    # # Apply reshaping and masking, only for plotting!!
-    # u_plot, v_plot = reshape(u, v, ref_img_final)
-    # u_plot, v_plot = mask_correction(u_plot, v_plot, ref_img_final)
-    # u_corr_plot, v_corr_plot = reshape(u_corr, v_corr, ref_img_final)
-    # u_corr_plot, v_corr_plot = mask_correction(u_corr_plot, v_corr_plot, ref_img_final)
+            # # Apply reshaping and masking, only for plotting!!
+            # u_plot, v_plot = reshape(u, v, ref_img_final)
+            # u_plot, v_plot = mask_correction(u_plot, v_plot, ref_img_final)
+            # u_corr_plot, v_corr_plot = reshape(u_corr, v_corr, ref_img_final)
+            # u_corr_plot, v_corr_plot = mask_correction(u_corr_plot, v_corr_plot, ref_img_final)
 
-    # plot_midplane(v,'original')
-    # plot_midplane(v_corr,'corrected')
-    # plt.legend()
-    # plt.show()
+            # plot_midplane(v,'original')
+            # plot_midplane(v_corr,'corrected')
+            # plt.legend()
+            # plt.show()
 
-    # # draw_quiver(u_corr,v_corr,ref_img_final)
+            # draw_quiver(u_corr,v_corr,ref_img_final)
 
-    # # streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    # # streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
-    # # compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
-    
-    # # Use display_many_fields function to plot vector field in the nozzle
-    # display_many_fields_object([(u_plot, v_plot, ref_img_final, f"Uncorrected vector field at alpha = {alpha}, blur = {blur}"),
-    #                             (u_corr_plot, v_corr_plot, ref_img_final, f"Corrected vector field at alpha = {alpha}, blur = {blur}")])
-    
+            # streamline_upper(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+            # streamline_lower(csv_path=f"CC Data/displacement_vectors{image_no}.csv")
+            # compare_streamlines(upper_csv_path=f"CC_streamline/upper_results_{image_no}.csv", lower_csv_path=f"CC_streamline/lower_results_{image_no}.csv")
+            
+            # Use display_many_fields function to plot vector field in the nozzle
+            # display_many_fields_object([(u_corr_plot, v_corr_plot, ref_img_final, f"Corrected vector field at alpha = {alpha}, blur = {blur}")])
+            
