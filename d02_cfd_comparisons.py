@@ -103,7 +103,7 @@ v = np.load("v_HS.npy") # V is upwards, U is rightwards
 
 # x, y, density, density_prime = get_cfd_values("Wavelet_noise_experiments/220/BOS_12_11_1/flow_MUSCL.vtu")
 
-x, y, density, density_prime = get_cfd_values_shifted("Wavelet_noise_experiments/252/BOS_12_11_7/flow_MUSCL.vtu")
+x, y, density, density_prime = get_cfd_values_shifted("Wavelet_noise_experiments/220/BOS_12_11_1/flow_MUSCL.vtu")
 
 new_x, line = get_straight_values(x, y, density_prime)
 
@@ -157,8 +157,8 @@ plt.close(fig)
 # Density Gradient at y0
 # plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 # plt.scatter(new_x, line, s=10, label=f'rho0=Add')
-plt.plot(new_x, (np.array(line)/rho0[6]), label=r"Normalised $\frac{d\rho}{dx}$")
-plt.xlabel(r'$ [$mm$]')
+plt.plot(new_x, (np.array(line)/rho0[0]), label=r"Normalised $\frac{d\rho}{dx}$")
+plt.xlabel(r'$x$ [$mm$]')
 plt.ylabel(r'$\frac{d\rho}{dx}$ [$kg/m^4$]')
 plt.title(r'Normalised $\frac{d\rho}{dx}$ vs x at $y=0$')
 plt.legend()
