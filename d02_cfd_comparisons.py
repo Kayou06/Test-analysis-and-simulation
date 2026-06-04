@@ -119,6 +119,8 @@ plt.show()
 plt.close()
 '''
 
+# Commented out this bottom section so it doesn't generate twice.
+'''
 # Density
 fig, ax = plt.subplots(figsize=(16, 4))
 sc = ax.scatter(x, y, c=density, s=10)
@@ -150,13 +152,14 @@ cbar.set_label(r"[$kg/m^4$]")
 fig.savefig("FINAL PLOTS/Density Gradients/CFD-densitygrad_BOS_12_11_7.png", dpi=300, bbox_inches="tight")
 plt.show()
 plt.close(fig)
+'''
 
 # Density Gradient at y0
 # plt.plot(x_common, all_curves[i], label=f'rho0={rho0[i]}')
 # plt.scatter(new_x, line, s=10, label=f'rho0=Add')
-plt.plot(new_x, (np.array(line)/rho0[6]), label=r"Normalised $\frac{d\rho}{dx}$ [$kg/m^4$]")
-plt.xlabel(r'x')
-plt.ylabel(r'$\frac{d\rho}{dx}$')
+plt.plot(new_x, (np.array(line)/rho0[6]), label=r"Normalised $\frac{d\rho}{dx}$")
+plt.xlabel(r'$ [$mm$]')
+plt.ylabel(r'$\frac{d\rho}{dx}$ [$kg/m^4$]')
 plt.title(r'Normalised $\frac{d\rho}{dx}$ vs x at $y=0$')
 plt.legend()
 plt.grid(True)
